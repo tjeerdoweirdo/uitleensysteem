@@ -82,7 +82,7 @@ main {
         </section>
     </main>
 
-<?php include ('footer.php') ?>
+<?php include ('includes/footer.php') ?>
 
 </body>
 
