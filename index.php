@@ -82,9 +82,7 @@ main {
         </section>
     </main>
 
-    <footer>
-        <p>&copy; Firda</p>
-    </footer>
+<?php include ('footer.php') ?>
 
 </body>
 
