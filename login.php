@@ -15,16 +15,7 @@
     error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-    // Insert the Admin user with hashed password (You may want to move this to a separate setup script)
-    $username = 'Admin';
-    $password = 'Admin1234';
-    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    $sql = "INSERT INTO users (username, password) VALUES (?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ss", $username, $hashedPassword);
-    $stmt->execute();
-    $stmt->close();
 
     // Handle the login logic
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
