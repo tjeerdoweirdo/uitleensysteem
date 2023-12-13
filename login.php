@@ -1,28 +1,17 @@
 <!DOCTYPE html>
 <html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="styles.css">
-    <title>Inloggen - Uitleen App</title>
-
-    <?php
+<?php
     session_start();
-    require_once('db_connection.php'); // Include the file with database connection logic
+    require_once('db_connection.php'); 
 
     error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-
-
-    // Handle the login logic
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $username = $_POST["username"];
         $password = $_POST["password"];
 
-        // Validate user credentials
+        
         $sql = "SELECT * FROM users WHERE username=?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("s", $username);
@@ -45,9 +34,17 @@ ini_set('display_errors', 1);
         $stmt->close();
     }
 
-    // Close the database connection
+   
     $conn->close();
     ?>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <title>Inloggen - Uitleen App</title>
+
+   
 </head>
 <body class="text-center">
     <header>
@@ -57,7 +54,6 @@ ini_set('display_errors', 1);
         <section>
             <h2>Inloggen</h2>
             <?php
-            // Display an error message if login fails
             if (isset($error_message)) {
                 echo "<p style='color: red;'>$error_message</p>";
             }
@@ -77,7 +73,6 @@ ini_set('display_errors', 1);
             </form>
         </section>
     </main>
-    <!-- Bootstrap JS (optional, for certain features) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
