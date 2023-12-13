@@ -8,20 +8,18 @@
   <style>
     
     footer {
-      background-color: #333; 
-      padding: 5px; 
-      text-align: center; 
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      font-size: 17px; 
-      color: white; 
-      display: flex;
-      flex-direction: column;
-      justify-content: center; 
-      align-items: center; 
-      height: 4vh; 
-    }
+  background-color: #333; 
+  padding: 5px; 
+  text-align: center; 
+  width: 100%;
+  font-size: 17px; 
+  color: white; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+  align-items: center; 
+  min-height: 4vh; /* Use min-height instead of height */
+}
 
     .footer-section {
       max-width: 300px; 
@@ -44,11 +42,8 @@
   <footer class="py-2"> <!-- Smaller padding -->
     <div class="container">
       <div class="row">
-   
-      </div>
-      <div class="row">
         <div class="col-md-12">
-          <p>&copy; 2023 UitleenService BV. Alle rechten voorbehouden.</p>
+          <p>&copy; 2023 Your Company Name. All rights reserved.</p>
         </div>
       </div>
     </div>
