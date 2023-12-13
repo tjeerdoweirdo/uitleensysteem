@@ -9,18 +9,18 @@
     
     footer {
       background-color: #333; 
-      padding: 10px; 
+      padding: 5px; 
       text-align: center; 
       position: fixed;
       bottom: 0;
       width: 100%;
-      font-size: 10px; 
+      font-size: 17px; 
       color: white; 
       display: flex;
       flex-direction: column;
       justify-content: center; 
       align-items: center; 
-      height: 13vh; 
+      height: 4vh; 
     }
 
     .footer-section {
@@ -34,7 +34,7 @@
     }
 
     li {
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
   </style>
 </head>
@@ -44,13 +44,7 @@
   <footer class="py-2"> <!-- Smaller padding -->
     <div class="container">
       <div class="row">
-        <div class="col-md-4">
-          <h4>Contactgegevens</h4>
-          <p>UitleenService BV
-            Adresstraat 123, 1234 AB Stad
-            Email: info@uitleenservice.nl
-            Telefoon: 0123-456789</p>
-        </div>
+   
       </div>
       <div class="row">
         <div class="col-md-12">
