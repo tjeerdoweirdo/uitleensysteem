@@ -20,6 +20,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["username"]) && isset($
 
     if ($sql_insert->execute()) {
         echo "User successfully added.";
+
+        // Redirect to prevent form resubmission
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit();
     } else {
         echo "Error adding user: " . $conn->error;
     }
