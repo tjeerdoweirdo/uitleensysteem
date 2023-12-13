@@ -69,7 +69,7 @@ ini_set('display_errors', 1);
                     <input type="password" id="password" name="password" class="form-control" required>
                 </div>
 
-                <button class="btn btn-primary" type="submit">Inloggen</button>
+                <button href="admindashboard.php" btn btn-primary" type="submit">Inloggen</button>
             </form>
         </section>
     </main>

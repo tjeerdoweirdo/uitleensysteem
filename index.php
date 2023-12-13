@@ -17,6 +17,28 @@ body {
   margin: 0;
 }
 
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #333;
+  color: #fff;
+}
+
+.login-btn {
+  text-decoration: none;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 4px;
+  background-color: #007bff;
+  transition: background-color 0.3s ease;
+}
+
+.login-btn:hover {
+  background-color: #0056b3;
+}
+
 main {
   flex: 1;
   display: flex;
@@ -31,7 +53,7 @@ main {
 }
 
 .card {
-  flex: 0 0 calc(33.33% - 20px); /* 33.33% width for each card with margin */
+  flex: 0 0 calc(33.33% - 20px);
   margin: 10px;
   max-width: 250px;
   box-sizing: border-box;
@@ -42,7 +64,6 @@ main {
   height: auto;
 }
 
-/* Add the following styles to ensure all cards have the same height */
 .card-body {
   height: 100%;
   display: flex;
@@ -56,6 +77,8 @@ main {
 .card-text {
   flex: 1;
 }
+
+
 
   
 </style>
