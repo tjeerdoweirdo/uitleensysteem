@@ -1,5 +1,5 @@
     function redirectToProduct(productId) {
-        window.location.href = '/uitleensysteem/product.php?id=' + productId;
+        window.location.href = '/uitleensysteem/paginas/product.php?id=' + productId;
     }
 
     document.addEventListener("DOMContentLoaded", function() {

@@ -1,6 +1,7 @@
 <?php
-require 'includes/db_connection.php';
-include 'includes/header.php';
+require '../includes/db_connection.php';
+include '../includes/header.php';
+
 
 $cat_id = 1;
 
@@ -21,8 +22,8 @@ $categorie = "<h1>" . "categorie" . "</h1>";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/uitleensysteem/css/cat.css">
-    <script src="js/cat.js"></script>
+    <link rel="stylesheet" href="../css/cat.css">
+    <script src="../js/cat.js"></script>
 </head>
 
 <body>
