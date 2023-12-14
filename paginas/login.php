@@ -2,17 +2,16 @@
 <html lang="nl">
 <?php
     session_start();
-    require_once('db_connection.php'); 
+    require_once('includes/db_connection.php'); 
 
     error_reporting(E_ALL);
-ini_set('display_errors', 1);
+    ini_set('display_errors', 1);
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $username = $_POST["username"];
-        $password = $_POST["password"];
+        $username = $_POST["userName"];
+        $password = $_POST["usersPwd"];
 
-        
-        $sql = "SELECT * FROM users WHERE username=?";
+        $sql = "SELECT * FROM users WHERE userName=?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("s", $username);
         $stmt->execute();
@@ -20,8 +19,8 @@ ini_set('display_errors', 1);
 
         if ($result->num_rows == 1) {
             $row = $result->fetch_assoc();
-            if (password_verify($password, $row["password"])) {
-                $_SESSION["username"] = $username;
+            if (password_verify($password, $row["usersPwd"])) {
+                $_SESSION["userName"] = $username;
                 header("Location: admindashboard.php");
                 exit();
             } else {
@@ -34,21 +33,70 @@ ini_set('display_errors', 1);
         $stmt->close();
     }
 
-   
     $conn->close();
-    ?>
+?>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles.css">
     <title>Inloggen - Uitleen App</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
 
-   
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        .home-btn {
+            text-decoration: none;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 4px;
+            background-color: #007bff;
+            transition: background-color 0.3s ease;
+        }
+
+        .home-btn:hover {
+            background-color: #0056b3;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-signin {
+            width: 100%;
+            max-width: 330px;
+            padding: 15px;
+            margin: auto;
+        }
+    </style>
 </head>
+
 <body class="text-center">
     <header>
         <h1>Uitleen App</h1>
+        <a href="index.php" class="home-btn">Home</a>
     </header>
     <main class="form-signin">
         <section>
@@ -69,7 +117,7 @@ ini_set('display_errors', 1);
                     <input type="password" id="password" name="password" class="form-control" required>
                 </div>
 
-                <button href="admindashboard.php" btn btn-primary" type="submit">Inloggen</button>
+                <button class="btn btn-primary" type="submit">Inloggen</button>
             </form>
         </section>
     </main>

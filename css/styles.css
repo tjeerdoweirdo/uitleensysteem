@@ -40,4 +40,44 @@ main {
     max-width: 300px;
 }
 
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
 
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+form {
+    flex: 1;
+    margin-right: 20px;
+}
+
+table {
+    flex: 2;
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+img {
+    max-width: 100px;
+}
+
+.overdue {
+    color: red;
+    font-weight: bold;
+}
