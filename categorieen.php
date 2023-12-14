@@ -1,5 +1,6 @@
 <?php
 require 'includes/db_connection.php';
+include 'includes/header.php';
 
 $cat_id = 1;
 
@@ -21,11 +22,7 @@ $categorie = "<h1>" . "categorie" . "</h1>";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/uitleensysteem/css/cat.css">
-    <script>
-        function redirectToProduct(productId) {
-            window.location.href = '/uitleensysteem/product.php?id=' + productId;
-        }
-    </script>
+    <script src="js/cat.js"></script>
 </head>
 
 <body>
