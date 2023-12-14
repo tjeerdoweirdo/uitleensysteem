@@ -1,36 +1,44 @@
 <!DOCTYPE html>
 <html lang="nl">
+
 <?php
     session_start();
-    require_once('includes/db_connection.php'); 
-
+    require_once('../includes/db_connection.php');
+    
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
 
+    $error_message = ''; 
+
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $username = $_POST["userName"];
-        $password = $_POST["usersPwd"];
 
-        $sql = "SELECT * FROM users WHERE userName=?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $username);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        if (isset($_POST["usersEmail"]) && isset($_POST["password"])) {
+            $usersEmail = $_POST["usersEmail"];
+            $password = $_POST["password"];
 
-        if ($result->num_rows == 1) {
-            $row = $result->fetch_assoc();
-            if (password_verify($password, $row["usersPwd"])) {
-                $_SESSION["userName"] = $username;
-                header("Location: admindashboard.php");
-                exit();
+            $sql = "SELECT * FROM users WHERE usersEmail=?";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("s", $usersEmail);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            if ($result->num_rows == 1) {
+                $row = $result->fetch_assoc();
+                if (password_verify($password, $row["usersPwd"])) {
+                    $_SESSION["userName"] = $row["userName"];
+                    header("Location: admindashboard.php");
+                    exit();
+                } else {
+                    $error_message = "Ongeldige gebruikersnaam of wachtwoord. Probeer het opnieuw.";
+                }
             } else {
                 $error_message = "Ongeldige gebruikersnaam of wachtwoord. Probeer het opnieuw.";
             }
-        } else {
-            $error_message = "Ongeldige gebruikersnaam of wachtwoord. Probeer het opnieuw.";
-        }
 
-        $stmt->close();
+            $stmt->close();
+        } else {
+            $error_message = "Niet alle vereiste velden zijn ingevuld.";
+        }
     }
 
     $conn->close();
@@ -43,7 +51,7 @@
     <link rel="stylesheet" href="styles.css">
     <title>Inloggen - Uitleen App</title>
     <style>
-        body {
+              body {
             display: flex;
             flex-direction: column;
             min-height: 100vh;
@@ -108,8 +116,8 @@
             ?>
             <form action="login.php" method="post">
                 <div class="form-group">
-                    <label for="username">Gebruikersnaam:</label>
-                    <input type="text" id="username" name="username" class="form-control" required>
+                    <label for="email">Email:</label>
+                    <input type="text" id="email" name="usersEmail" class="form-control" required>
                 </div>
 
                 <div class="form-group">
@@ -125,4 +133,5 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>
