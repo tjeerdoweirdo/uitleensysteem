@@ -1,6 +1,3 @@
-<!DOCTYPE html>
-<html lang="nl">
-
 <?php
 session_start();
 require_once('../includes/db_connection.php');
@@ -11,7 +8,6 @@ ini_set('display_errors', 1);
 $error_message = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
     if (isset($_POST["usersEmail"]) && isset($_POST["password"])) {
         $usersEmail = $_POST["usersEmail"];
         $password = $_POST["password"];
@@ -26,7 +22,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $row = $result->fetch_assoc();
             // Compare plain text password
             if ($password === $row["usersPwd"]) {
+                $_SESSION["user_id"] = $row["usersId"];
                 $_SESSION["userName"] = $row["usersName"];
+                $_SESSION["userRole"] = $row["userRole"]; // Store user role in the session
                 header("Location: admindashboard.php");
                 exit();
             } else {
@@ -44,6 +42,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 $conn->close();
 ?>
+
+<!DOCTYPE html>
+<html lang="nl">
 
 <head>
     <meta charset="UTF-8">

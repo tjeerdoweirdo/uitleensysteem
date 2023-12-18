@@ -1,4 +1,12 @@
 <?php
+session_start();
+
+// Check if the user has a valid session ID
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php'); // Redirect to the login page if not logged in
+    exit();
+}
+
 function generateRandomPassword($length = 8) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $password = '';
@@ -79,14 +87,13 @@ $result = $conn->query($sql_select);
 <div class="container mt-5">
     <div class="card text-center">
         <div class="card-header">
-            <h2>Add User</h2>
+            <h2>docent toevoegen</h2>
         </div>
         <div class="card-body">
             <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
                 <div class="form-group">
                     <label for="email">Email:</label>
                     <input type="email" class="form-control" name="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
-</div>
                 </div>
                 <button type="submit" class="btn btn-primary">Toevoegen</button>
             </form>
@@ -104,7 +111,7 @@ $result = $conn->query($sql_select);
             echo "<p class='card-text'>{$row['usersEmail']}</p>";
             echo "<form method='post' action='" . htmlspecialchars($_SERVER["PHP_SELF"]) . "'>";
             echo "<input type='hidden' name='remove_user' value='{$row['usersId']}'>";
-            echo "<button type='submit' class='btn btn-danger'>Remove</button>";
+            echo "<button type='submit' class='btn btn-danger'>verwijder</button>";
             echo "</form>";
             echo "</div>";
             echo "</div>";
@@ -117,7 +124,6 @@ $result = $conn->query($sql_select);
 
     $result->close();
     ?>
-</div>
 
 </body>
 </html>
