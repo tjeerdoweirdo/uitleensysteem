@@ -1,4 +1,12 @@
 <?php
+session_start();
+
+// Check if the user has a valid session ID
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php'); // Redirect to the login page if not logged in
+    exit();
+}
+
 function generateRandomPassword($length = 8) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $password = '';
@@ -86,7 +94,6 @@ $result = $conn->query($sql_select);
                 <div class="form-group">
                     <label for="email">Email:</label>
                     <input type="email" class="form-control" name="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
-</div>
                 </div>
                 <button type="submit" class="btn btn-primary">Toevoegen</button>
             </form>

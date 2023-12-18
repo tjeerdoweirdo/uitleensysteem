@@ -1,6 +1,3 @@
-<!DOCTYPE html>
-<html lang="nl">
-
 <?php
 session_start();
 require_once('../includes/db_connection.php');
@@ -11,7 +8,6 @@ ini_set('display_errors', 1);
 $error_message = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
     if (isset($_POST["usersEmail"]) && isset($_POST["password"])) {
         $usersEmail = $_POST["usersEmail"];
         $password = $_POST["password"];
@@ -26,6 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $row = $result->fetch_assoc();
             // Compare plain text password
             if ($password === $row["usersPwd"]) {
+                $_SESSION["user_id"] = $row["usersId"];
                 $_SESSION["userName"] = $row["usersName"];
                 $_SESSION["userRole"] = $row["userRole"]; // Store user role in the session
                 header("Location: admindashboard.php");
@@ -46,8 +43,64 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 $conn->close();
 ?>
 
+<!DOCTYPE html>
+<html lang="nl">
+
 <head>
-    <!-- Your existing head content -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <title>Inloggen - Uitleen App</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        .home-btn {
+            text-decoration: none;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 4px;
+            background-color: #007bff;
+            transition: background-color 0.3s ease;
+        }
+
+        .home-btn:hover {
+            background-color: #0056b3;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-signin {
+            width: 100%;
+            max-width: 330px;
+            padding: 15px;
+            margin: auto;
+        }
+    </style>
 </head>
 
 <body class="text-center">
