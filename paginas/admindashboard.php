@@ -34,6 +34,7 @@
     </style>
 </head>
 <body>
+
     <section>
         <h2>Elektronica Uitleen Admin</h2>
 
@@ -43,23 +44,38 @@
         $password = "";
         $dbname = "uitleensysteem";
 
-        // Maak verbinding met de database
+        // Create a connection to the database
         $conn = new mysqli($servername, $username, $password, $dbname);
 
-        // Controleer de verbinding
+        // Check the connection
         if ($conn->connect_error) {
             die("Connection failed: " . $conn->connect_error);
         }
 
-        // Haal items op die te laat zijn ingeleverd
+        // Check if a delete request is submitted
+        if (isset($_GET['delete_id'])) {
+            $deleteId = $_GET['delete_id'];
+
+            // Construct the delete query
+            $deleteQuery = "DELETE FROM uitleningen WHERE id = $deleteId";
+
+            // Execute the delete query
+            if ($conn->query($deleteQuery) === TRUE) {
+                echo "<p>Item successfully deleted.</p>";
+            } else {
+                echo "<p>Error deleting item: " . $conn->error . "</p>";
+            }
+        }
+
+        // Query to get items that are overdue
         $teLaatQuery = "SELECT * FROM uitleningen WHERE datum_inleveren < CURRENT_DATE";
         $teLaatResult = $conn->query($teLaatQuery);
 
-        // Haal items op die vandaag moeten worden ingeleverd
+        // Query to get items that are due today
         $vandaagQuery = "SELECT * FROM uitleningen WHERE datum_inleveren = CURRENT_DATE";
         $vandaagResult = $conn->query($vandaagQuery);
 
-        // Haal alles op wat nu wordt uitgeleend
+        // Query to get items that are currently borrowed
         $nuUitgeleendQuery = "SELECT * FROM uitleningen WHERE datum_inleveren > CURRENT_DATE";
         $nuUitgeleendResult = $conn->query($nuUitgeleendQuery);
         ?>
@@ -71,7 +87,8 @@
                     <th>Voorwerp Naam</th>
                     <th>Datum van Inleveren</th>
                     <th>Student ID</th>
-                    <th>category<th>
+                    <th>Category</th>
+                    <th>Action</th>
                 </tr>
                 <?php
                 while ($row = $teLaatResult->fetch_assoc()) {
@@ -80,6 +97,7 @@
                             <td>{$row['datum_inleveren']}</td>
                             <td>{$row['student_id']}</td>
                             <td>{$row['category']}</td>
+                            <td><a href='?delete_id={$row['id']}'>Delete</a></td>
                           </tr>";
                 }
                 ?>
@@ -87,54 +105,58 @@
         </section>
 
         <section>
-            <h3>Vandaag Inleveren</h3>
-            <table>
-                <tr>
-                    <th>Voorwerp Naam</th>
-                    <th>Datum van Inleveren</th>
-                    <th>Student ID</th>
-                    <th>category<th>
-                </tr>
-                <?php
-                while ($row = $vandaagResult->fetch_assoc()) {
-                    echo "<tr>
-                            <td>{$row['voorwerp_naam']}</td>
-                            <td>{$row['datum_inleveren']}</td>
-                            <td>{$row['student_id']}</td>
-                            <td>{$row['category']}</td>
-                          </tr>";
-                }
-                ?>
-            </table>
-        </section>
-
-        <section>
-            <h3>Nu Uitgeleend</h3>
-            <table>
-                <tr>
-                    <th>Voorwerp Naam</th>
-                    <th>Datum van Inleveren</th>
-                    <th>Student ID</th>
-                    <th>category<th>
-                </tr>
-                <?php
-                while ($row = $nuUitgeleendResult->fetch_assoc()) {
-                    echo "<tr>
-                            <td>{$row['voorwerp_naam']}</td>
-                            <td>{$row['datum_inleveren']}</td>
-                            <td>{$row['student_id']}</td>
-                            <td>{$row['category']}</td>
-
-                          </tr>";
-                }
-                ?>
-            </table>
-        </section>
-
+    <h3>Vandaag Inleveren</h3>
+    <table>
+        <tr>
+            <th>Voorwerp Naam</th>
+            <th>Datum van Inleveren</th>
+            <th>Student ID</th>
+            <th>Category</th>
+            <th>Action</th>
+        </tr>
         <?php
-        // Sluit de databaseverbinding
-        $conn->close();
+        while ($row = $vandaagResult->fetch_assoc()) {
+            echo "<tr>
+                    <td>{$row['voorwerp_naam']}</td>
+                    <td>{$row['datum_inleveren']}</td>
+                    <td>{$row['student_id']}</td>
+                    <td>{$row['category']}</td>
+                    <td><a href='?delete_id={$row['id']}'>Delete</a></td>
+                  </tr>";
+        }
         ?>
+    </table>
+</section>
+
+<section>
+    <h3>Nu Uitgeleend</h3>
+    <table>
+        <tr>
+            <th>Voorwerp Naam</th>
+            <th>Datum van Inleveren</th>
+            <th>Student ID</th>
+            <th>Category</th>
+            <th>Action</th>
+        </tr>
+        <?php
+        while ($row = $nuUitgeleendResult->fetch_assoc()) {
+            echo "<tr>
+                    <td>{$row['voorwerp_naam']}</td>
+                    <td>{$row['datum_inleveren']}</td>
+                    <td>{$row['student_id']}</td>
+                    <td>{$row['category']}</td>
+                    <td><a href='?delete_id={$row['id']}'>Delete</a></td>
+                  </tr>";
+        }
+        ?>
+    </table>
+</section>
+
+<?php
+// Close the database connection
+$conn->close();
+?>
+</section>
     </section>
 </body>
 </html>
