@@ -79,7 +79,7 @@ $result = $conn->query($sql_select);
 <div class="container mt-5">
     <div class="card text-center">
         <div class="card-header">
-            <h2>Add User</h2>
+            <h2>docent toevoegen</h2>
         </div>
         <div class="card-body">
             <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
@@ -104,7 +104,7 @@ $result = $conn->query($sql_select);
             echo "<p class='card-text'>{$row['usersEmail']}</p>";
             echo "<form method='post' action='" . htmlspecialchars($_SERVER["PHP_SELF"]) . "'>";
             echo "<input type='hidden' name='remove_user' value='{$row['usersId']}'>";
-            echo "<button type='submit' class='btn btn-danger'>Remove</button>";
+            echo "<button type='submit' class='btn btn-danger'>verwijder</button>";
             echo "</form>";
             echo "</div>";
             echo "</div>";
@@ -117,7 +117,6 @@ $result = $conn->query($sql_select);
 
     $result->close();
     ?>
-</div>
 
 </body>
 </html>
