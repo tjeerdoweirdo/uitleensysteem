@@ -71,6 +71,7 @@
                     <th>Voorwerp Naam</th>
                     <th>Datum van Inleveren</th>
                     <th>Student ID</th>
+                    <th>category<th>
                 </tr>
                 <?php
                 while ($row = $teLaatResult->fetch_assoc()) {
@@ -78,6 +79,7 @@
                             <td>{$row['voorwerp_naam']}</td>
                             <td>{$row['datum_inleveren']}</td>
                             <td>{$row['student_id']}</td>
+                            <td>{$row['category']}</td>
                           </tr>";
                 }
                 ?>
@@ -91,6 +93,7 @@
                     <th>Voorwerp Naam</th>
                     <th>Datum van Inleveren</th>
                     <th>Student ID</th>
+                    <th>category<th>
                 </tr>
                 <?php
                 while ($row = $vandaagResult->fetch_assoc()) {
@@ -98,6 +101,7 @@
                             <td>{$row['voorwerp_naam']}</td>
                             <td>{$row['datum_inleveren']}</td>
                             <td>{$row['student_id']}</td>
+                            <td>{$row['category']}</td>
                           </tr>";
                 }
                 ?>
@@ -111,6 +115,7 @@
                     <th>Voorwerp Naam</th>
                     <th>Datum van Inleveren</th>
                     <th>Student ID</th>
+                    <th>category<th>
                 </tr>
                 <?php
                 while ($row = $nuUitgeleendResult->fetch_assoc()) {
@@ -118,6 +123,8 @@
                             <td>{$row['voorwerp_naam']}</td>
                             <td>{$row['datum_inleveren']}</td>
                             <td>{$row['student_id']}</td>
+                            <td>{$row['category']}</td>
+
                           </tr>";
                 }
                 ?>
