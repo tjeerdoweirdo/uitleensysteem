@@ -2,46 +2,47 @@
 <html lang="nl">
 
 <?php
-    session_start();
-    require_once('../includes/db_connection.php');
-    
-    error_reporting(E_ALL);
-    ini_set('display_errors', 1);
+session_start();
+require_once('../includes/db_connection.php');
 
-    $error_message = ''; 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+$error_message = '';
 
-        if (isset($_POST["usersEmail"]) && isset($_POST["password"])) {
-            $usersEmail = $_POST["usersEmail"];
-            $password = $_POST["password"];
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
-            $sql = "SELECT * FROM users WHERE usersEmail=?";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("s", $usersEmail);
-            $stmt->execute();
-            $result = $stmt->get_result();
+    if (isset($_POST["usersEmail"]) && isset($_POST["password"])) {
+        $usersEmail = $_POST["usersEmail"];
+        $password = $_POST["password"];
 
-            if ($result->num_rows == 1) {
-                $row = $result->fetch_assoc();
-                if (password_verify($password, $row["usersPwd"])) {
-                    $_SESSION["userName"] = $row["userName"];
-                    header("Location: admindashboard.php");
-                    exit();
-                } else {
-                    $error_message = "Ongeldige gebruikersnaam of wachtwoord. Probeer het opnieuw.";
-                }
+        $sql = "SELECT * FROM users WHERE usersEmail=?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $usersEmail);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows == 1) {
+            $row = $result->fetch_assoc();
+            // Compare plain text password
+            if ($password === $row["usersPwd"]) {
+                $_SESSION["userName"] = $row["usersName"];
+                header("Location: admindashboard.php");
+                exit();
             } else {
                 $error_message = "Ongeldige gebruikersnaam of wachtwoord. Probeer het opnieuw.";
             }
-
-            $stmt->close();
         } else {
-            $error_message = "Niet alle vereiste velden zijn ingevuld.";
+            $error_message = "Ongeldige gebruikersnaam of wachtwoord. Probeer het opnieuw.";
         }
-    }
 
-    $conn->close();
+        $stmt->close();
+    } else {
+        $error_message = "Niet alle vereiste velden zijn ingevuld.";
+    }
+}
+
+$conn->close();
 ?>
 
 <head>
@@ -51,7 +52,7 @@
     <link rel="stylesheet" href="styles.css">
     <title>Inloggen - Uitleen App</title>
     <style>
-              body {
+        body {
             display: flex;
             flex-direction: column;
             min-height: 100vh;
@@ -103,7 +104,7 @@
 
 <body class="text-center">
     <header>
-        <h1>Uitleen App</h1>
+        <h1>Uitleen systeem</h1>
         <a href="index.php" class="home-btn">Home</a>
     </header>
     <main class="form-signin">

@@ -123,7 +123,7 @@
 
   
 <header>
-        <h1>Item Lending App</h1>
+        <h1>Uitleen systeem</h1>
         <a href="login.php" class="login-btn">Inloggen</a>
     </header>
 
