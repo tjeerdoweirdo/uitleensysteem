@@ -1,6 +1,5 @@
-
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
     background-color: #f4f4f4;
     margin: 0;
 }
@@ -29,6 +28,16 @@ body {
     white-space: nowrap;
 }
 
-h1 {
-    color: #333;
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.fade-in-row {
+    animation: fadeIn 0.5s ease-in-out;
 }
