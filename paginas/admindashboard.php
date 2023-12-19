@@ -4,7 +4,6 @@ $servername = "localhost";
 $username = "root";
 $password = "";
 $dbname = "uitleensysteem";
-
 // Maak verbinding met de database
 $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -24,6 +23,8 @@ $todayItemsResult = $conn->query($todayItemsQuery);
 // Query voor momenteel uitgeleende items
 $currentItemsQuery = "SELECT voorwerp_naam, category, datum_inleveren, student_id FROM uitleningen WHERE datum_inleveren > CURRENT_DATE";
 $currentItemsResult = $conn->query($currentItemsQuery);
+
+
 ?>
 
 <!DOCTYPE html>
@@ -31,16 +32,10 @@ $currentItemsResult = $conn->query($currentItemsQuery);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php include '../includes/header.php';
+?>
     <title>Elektronica Uitleen Admin</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-
-        h2 {
-            color: #333;
-        }
 
         table {
             width: 100%;
@@ -60,7 +55,7 @@ $currentItemsResult = $conn->query($currentItemsQuery);
     </style>
 </head>
 <body>
-    <h2>Vertraagde Items</h2>
+    <h2>Telaat ingeleverde items</h2>
     <table border="1">
         <tr>
             <th>Voorwerp Naam</th>
