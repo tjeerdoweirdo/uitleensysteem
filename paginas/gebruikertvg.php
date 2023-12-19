@@ -1,11 +1,12 @@
 <?php
 session_start();
 
-// Check if the user has a valid session ID
-if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php'); // Redirect to the login page if not logged in
+
+if (!isset($_SESSION['user_id']) ) {
+    header('Location: login.php');
     exit();
 }
+
 
 function generateRandomPassword($length = 8) {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -27,7 +28,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Handle user registration
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["email"])) {
     $usersEmail = $_POST["email"];
 
@@ -39,19 +40,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["email"])) {
     if ($sql_insert->execute()) {
         echo "User successfully added.";
 
-        // Redirect to prevent form resubmission
+      
         header("Location: " . $_SERVER['PHP_SELF']);
         exit();
     } else {
         echo "Error adding user: " . $conn->error;
-        // Print or log the actual SQL query for debugging
         echo "SQL Query: " . $sql_insert->error;
     }
 
     $sql_insert->close();
 }
 
-// Handle user removal (unchanged)
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["remove_user"])) {
     $user_id_to_remove = $_POST["remove_user"];
 
@@ -70,7 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["remove_user"])) {
     $sql_delete->close();
 }
 
-// Fetch and display existing users
+
 $sql_select = "SELECT usersId, usersEmail FROM users";
 $result = $conn->query($sql_select);
 ?>
@@ -78,7 +78,6 @@ $result = $conn->query($sql_select);
 <!DOCTYPE html>
 <html>
 <head>
-    <!-- Add this link to include Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <title>User Management</title>
 </head>
