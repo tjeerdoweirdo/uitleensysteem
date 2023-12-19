@@ -1,12 +1,5 @@
 <?php
-// Verbindingsparameters
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "uitleensysteem";
-
-// Maak verbinding met de database
-$conn = new mysqli($servername, $username, $password, $dbname);
+require_once('../includes/db_connection.php');
 
 // Controleer de verbinding
 if ($conn->connect_error) {
@@ -15,12 +8,12 @@ if ($conn->connect_error) {
 
 // Voeg een nieuw item toe
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $voorwerp_naam = $_POST["voorwerp_naam"];
-    $category = $_POST["category"];
-    $datum_inleveren = $_POST["datum_inleveren"];
-    $student_id = $_POST["student_id"];
+    $voorwerp_naam = $_POST["itemName"];
+    $datum_inleveren = $_POST["itemDin"];
+   
 
-    $insertQuery = "INSERT INTO uitleningen (voorwerp_naam, category, datum_inleveren, student_id) VALUES ('$voorwerp_naam', '$category', '$datum_inleveren', '$student_id')";
+    $insertQuery = "INSERT INTO items (itemName, itemDin, itemDout, itemDescription, itemState, itemPicture) 
+                    VALUES ('$voorwerp_naam', '$datum_inleveren', '','','','')";
 
     if ($conn->query($insertQuery) === TRUE) {
         echo "Item succesvol toegevoegd!";
@@ -47,22 +40,22 @@ include '../includes/header.php';
         <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="voorwerp_naam">Voorwerp Naam:</label>
-                <input type="text" class="form-control" name="voorwerp_naam" required>
+                <input type="text" class="form-control" name="itemName" required>
             </div>
 
             <div class="form-group">
                 <label for="category">Categorie:</label>
-                <input type="text" class="form-control" name="category" required>
+                <input type="text" class="form-control" name="category" >
             </div>
 
             <div class="form-group">
-                <label for="datum_inleveren">Datum van Inleveren:</label>
-                <input type="date" class="form-control" name="datum_inleveren" required>
+                <label for="itemDin">Datum van Inleveren:</label>
+                <input type="date" class="form-control" name="itemDin">
             </div>
 
             <div class="form-group">
                 <label for="student_id">Student ID:</label>
-                <input type="text" class="form-control" name="student_id" required>
+                <input type="text" class="form-control" name="student_id" >
             </div>
 
             <button type="submit" class="btn btn-primary">Voeg Item Toe</button>

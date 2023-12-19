@@ -7,13 +7,12 @@ if (!isset($_SESSION['user_id'])) {
  
     $redirect = "index.php";
 }
-
-// Logout logic
+ 
 if (isset($_GET['logout'])) {
    
     $_SESSION = array();
 
-    // Destroy the session
+    
     session_destroy();
 
     

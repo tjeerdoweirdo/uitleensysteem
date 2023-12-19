@@ -139,7 +139,7 @@
         </section>
 
         <div class="card-container">
-            <!-- Your card HTML remains unchanged -->
+       
 
             <div class="card">
                 <img src="..." class="card-img-top" alt="...">
@@ -161,7 +161,7 @@
                 </div>
             </div>
 
-            <!-- Add more cards as needed -->
+           
 
         </div>
     </main>

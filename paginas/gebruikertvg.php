@@ -86,7 +86,7 @@ $result = $conn->query($sql_select);
 <div class="container mt-5">
     <div class="card text-center">
         <div class="card-header">
-            <h2>docent toevoegen</h2>
+            <h2>Docent toevoegen</h2>
         </div>
         <div class="card-body">
             <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
@@ -99,7 +99,7 @@ $result = $conn->query($sql_select);
         </div>
     </div>
 
-    <h2 class="mt-4">Existing Users</h2>
+    <h2 class="mt-4">Bestaande gebruikers</h2>
     <?php
     if ($result->num_rows > 0) {
         echo "<div class='row'>";
@@ -110,7 +110,7 @@ $result = $conn->query($sql_select);
             echo "<p class='card-text'>{$row['usersEmail']}</p>";
             echo "<form method='post' action='" . htmlspecialchars($_SERVER["PHP_SELF"]) . "'>";
             echo "<input type='hidden' name='remove_user' value='{$row['usersId']}'>";
-            echo "<button type='submit' class='btn btn-danger'>verwijder</button>";
+            echo "<button type='submit' class='btn btn-danger'>Verwijder</button>";
             echo "</form>";
             echo "</div>";
             echo "</div>";
@@ -128,6 +128,5 @@ $result = $conn->query($sql_select);
 </html>
 
 <?php
-// Close the database connection
 $conn->close();
 ?>
