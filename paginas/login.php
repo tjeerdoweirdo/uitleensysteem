@@ -1,26 +1,30 @@
-<!DOCTYPE html>
-<html lang="nl">
 <?php
-    session_start();
-    require_once('includes/db_connection.php'); 
+session_start();
+require_once('../includes/db_connection.php');
 
-    error_reporting(E_ALL);
-    ini_set('display_errors', 1);
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $username = $_POST["userName"];
-        $password = $_POST["usersPwd"];
+$error_message = '';
 
-        $sql = "SELECT * FROM users WHERE userName=?";
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST["usersEmail"]) && isset($_POST["password"])) {
+        $usersEmail = $_POST["usersEmail"];
+        $password = $_POST["password"];
+
+        $sql = "SELECT * FROM users WHERE usersEmail=?";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("s", $username);
+        $stmt->bind_param("s", $usersEmail);
         $stmt->execute();
         $result = $stmt->get_result();
 
         if ($result->num_rows == 1) {
             $row = $result->fetch_assoc();
-            if (password_verify($password, $row["usersPwd"])) {
-                $_SESSION["userName"] = $username;
+            // Compare plain text password
+            if ($password === $row["usersPwd"]) {
+                $_SESSION["user_id"] = $row["usersId"];
+                $_SESSION["userName"] = $row["usersName"];
+                $_SESSION["userRole"] = $row["userRole"]; // Store user role in the session
                 header("Location: admindashboard.php");
                 exit();
             } else {
@@ -31,10 +35,16 @@
         }
 
         $stmt->close();
+    } else {
+        $error_message = "Niet alle vereiste velden zijn ingevuld.";
     }
+}
 
-    $conn->close();
+$conn->close();
 ?>
+
+<!DOCTYPE html>
+<html lang="nl">
 
 <head>
     <meta charset="UTF-8">
@@ -95,7 +105,7 @@
 
 <body class="text-center">
     <header>
-        <h1>Uitleen App</h1>
+        <h1>Uitleen systeem</h1>
         <a href="index.php" class="home-btn">Home</a>
     </header>
     <main class="form-signin">
@@ -108,8 +118,8 @@
             ?>
             <form action="login.php" method="post">
                 <div class="form-group">
-                    <label for="username">Gebruikersnaam:</label>
-                    <input type="text" id="username" name="username" class="form-control" required>
+                    <label for="email">Email:</label>
+                    <input type="text" id="email" name="usersEmail" class="form-control" required>
                 </div>
 
                 <div class="form-group">
@@ -125,4 +135,5 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>
