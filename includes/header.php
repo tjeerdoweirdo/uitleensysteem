@@ -1,5 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+<?php
+
+
+if (!isset($_SESSION['user_id'])) {
+ 
+    $redirect = "index.php";
+}
+
+// Logout logic
+if (isset($_GET['logout'])) {
+   
+    $_SESSION = array();
+
+    // Destroy the session
+    session_destroy();
+
+    
+    $redirect = "index.php";
+}
+?>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +27,8 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
+
+
 
 <header class="bg-dark text-white">
     <div class="container">
@@ -16,8 +38,7 @@
                 <li class="nav-item"><a class="nav-link text-white" href="admindashboard.php">Dashboard</a></li>
                 <li class="nav-item"><a class="nav-link text-white" href="add_item.php">Producten toevoegen</a></li>
                 <li class="nav-item"><a class="nav-link text-white" href="gebruikertvg.php">Gebruiker toevoegen</a></li>
-                <li class="nav-item"><a class="nav-link text-white" href="index.php">Log uit</a></li>
-            </ul>
+                <li class="nav-item"><a class="nav-link text-white" href="?logout=1">Log uit</a></li>
             </ul>
         </nav>
     </div>
