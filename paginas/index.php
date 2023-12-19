@@ -2,6 +2,9 @@
 <html lang="en">
 
 <head>
+    <!-- Add jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
@@ -51,6 +54,29 @@
 
         .search-bar {
             margin-bottom: 20px;
+            position: relative;
+        }
+
+        /* Add this style for autocomplete results */
+        #autocomplete-results {
+            position: absolute;
+            width: 100%;
+            max-height: 150px;
+            overflow-y: auto;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        #autocomplete-results div {
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        #autocomplete-results div:hover {
+            background-color: #f0f0f0;
         }
 
         .card-container {
@@ -117,12 +143,54 @@
             }
         }
     </style>
+
+    <!-- Add the autocomplete script -->
+    <script>
+        $(document).ready(function () {
+            $('#search').keyup(function () {
+                var query = $(this).val();
+
+                if (query.length >= 2) {
+                    $.ajax({
+                        url: 'autocomplete.php',
+                        method: 'GET',
+                        data: { query: query },
+                        success: function (data) {
+                            try {
+                                var results = JSON.parse(data);
+                                var autocompleteResults = $('#autocomplete-results');
+                                autocompleteResults.empty();
+
+                                results.forEach(function (result) {
+                                    autocompleteResults.append('<div>' + result + '</div>');
+                                });
+
+                                autocompleteResults.show();
+                            } catch (error) {
+                                console.error('Error parsing JSON:', error);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Ajax request error:', error);
+                        }
+                    });
+                } else {
+                    $('#autocomplete-results').hide();
+                }
+            });
+
+            // Handle click outside the autocomplete results to hide them
+            $(document).on('click', function (e) {
+                if (!$(e.target).closest('#autocomplete-results').length) {
+                    $('#autocomplete-results').hide();
+                }
+            });
+        });
+    </script>
 </head>
 
 <body>
-
-  
-<header>
+    <header>
         <h1>Uitleen systeem</h1>
         <a href="login.php" class="login-btn">Inloggen</a>
     </header>
@@ -135,38 +203,41 @@
 
         <section class="search-bar">
             <input type="text" id="search" name="search" placeholder="Zoeken...">
-            <button class="btn btn-primary">Zoeken</button>
+            <div id="autocomplete-results"></div>
         </section>
 
         <div class="card-container">
-       
-
-            <div class="card">
-                <img src="..." class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                        card's content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
-                </div>
-            </div>
-
-            <div class="card">
-                <img src="..." class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the
-                        card's content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
-                </div>
-            </div>
-
-           
-
+            <!-- Your card container content -->
         </div>
     </main>
-
-    
 </body>
 
 </html>
+
+<?php
+include("../includes/db_connect.php");
+
+if (!$db_connection) {
+    die('Database connection failed: ' . mysqli_connect_error());
+}
+
+if (isset($_GET['query']
+)) {
+    $query = $_GET['query'];
+
+    $sql = "SELECT itemName FROM items WHERE itemName LIKE '%$query%'";
+    $result = mysqli_query($db_connection, $sql);
+
+    if (!$result) {
+        die('Error executing query: ' . mysqli_error($db_connection));
+    }
+
+    $data = array();
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        $data[] = $row['itemName'];
+    }
+
+    echo json_encode($data);
+}
+?>
