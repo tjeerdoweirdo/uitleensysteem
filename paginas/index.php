@@ -215,14 +215,13 @@
 </html>
 
 <?php
-include("../includes/db_connect.php");
+include("../includes/db_connection.php");
 
 if (!$db_connection) {
     die('Database connection failed: ' . mysqli_connect_error());
 }
 
-if (isset($_GET['query']
-)) {
+if (isset($_GET['query'])) {
     $query = $_GET['query'];
 
     $sql = "SELECT itemName FROM items WHERE itemName LIKE '%$query%'";
@@ -241,3 +240,4 @@ if (isset($_GET['query']
     echo json_encode($data);
 }
 ?>
+
