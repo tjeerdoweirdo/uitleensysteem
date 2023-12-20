@@ -10,8 +10,6 @@ $result_product = $conn->query($product);
 $result_cat = $conn->query($cat);
 
 $row_cat = $result_cat->fetch_assoc();
-
-$categorie = "<h1>" . "categorie" . "</h1>";
 ?>
 
 <html>
@@ -26,7 +24,7 @@ $categorie = "<h1>" . "categorie" . "</h1>";
 
 <body>
     <div class="bg-dark text-white">
-        <header> <?php echo $categorie; ?> </header>
+        <header><h1><?php echo $row_cat["cat_name"]; ?><h1></header>
         <a class="nav-item"><a class="nav-link text-white" href="index.php">Home</a></a>
     </div>
 
@@ -55,5 +53,7 @@ $categorie = "<h1>" . "categorie" . "</h1>";
 </body>
 
 </html>
-<?php //include '../includes/footer.php'; 
+
+<?php
+//include '../includes/footer.php'; 
 ?>
