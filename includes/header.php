@@ -3,7 +3,7 @@
 <?php
 
 
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['usersId'])) {
  
     $redirect = "index.php";
 }
