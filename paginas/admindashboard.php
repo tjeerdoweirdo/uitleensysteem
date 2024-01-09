@@ -10,16 +10,31 @@ if ($conn->connect_error) {
 $currentDate = date('Y-m-d');
 
 // Query for delayed items
-$delayedItemsQuery = "SELECT itemName, itemDin FROM items WHERE itemDout < '$currentDate' AND itemDout IS NOT NULL";
+$delayedItemsQuery = "SELECT * FROM items WHERE itemDout < '$currentDate' AND itemDout IS NOT NULL";
 $delayedItemsResult = $conn->query($delayedItemsQuery);
 
+// Check for errors in query execution
+if (!$delayedItemsResult) {
+    die("Query failed: " . $conn->error);
+}
+
 // Query for items due today
-$todayItemsQuery = "SELECT itemName, itemDin FROM items WHERE itemDout = '$currentDate'";
+$todayItemsQuery = "SELECT * FROM items WHERE itemDout = '$currentDate'";
 $todayItemsResult = $conn->query($todayItemsQuery);
 
+// Check for errors in query execution
+if (!$todayItemsResult) {
+    die("Query failed: " . $conn->error);
+}
+
 // Query for currently borrowed items
-$currentItemsQuery = "SELECT itemName, itemDin FROM items WHERE itemDout IS NULL";
+$currentItemsQuery = "SELECT * FROM items WHERE itemDout IS NULL";
 $currentItemsResult = $conn->query($currentItemsQuery);
+
+// Check for errors in query execution
+if (!$currentItemsResult) {
+    die("Query failed: " . $conn->error);
+}
 ?>
 
 <!DOCTYPE html>
@@ -56,12 +71,32 @@ $currentItemsResult = $conn->query($currentItemsQuery);
         <h2>Telaat ingeleverde items</h2>
         <table border="1">
             <tr>
-                <th>Voorwerp Naam</th>
+                <th>Item ID</th>
+                <th>Item Naam</th>
+                <th>Item Nummer</th>
                 <th>Datum van Inleveren</th>
+                <th>Datum van Terugbrengen</th>
+                <th>Item Omschrijving</th>
+                <th>Item Status</th>
+                <!-- Add more columns as needed -->
             </tr>
             <?php
-            while ($row = $delayedItemsResult->fetch_assoc()) {
-                echo "<tr><td>{$row['itemName']}</td><td>{$row['itemDin']}</td></tr>";
+            // Check if there are results
+            if ($delayedItemsResult->num_rows > 0) {
+                while ($row = $delayedItemsResult->fetch_assoc()) {
+                    echo "<tr>
+                            <td>{$row['itemId']}</td>
+                            <td>{$row['itemName']}</td>
+                            <td>{$row['itemNumber']}</td>
+                            <td>{$row['itemDin']}</td>
+                            <td>{$row['itemDout']}</td>
+                            <td>{$row['itemDescription']}</td>
+                            <td>{$row['itemState']}</td>
+                            <!-- Add more columns as needed -->
+                          </tr>";
+                }
+            } else {
+                echo "<tr><td colspan='8'>No delayed items found</td></tr>";
             }
             ?>
         </table>
@@ -71,12 +106,32 @@ $currentItemsResult = $conn->query($currentItemsQuery);
         <h2>Items die vandaag moeten worden ingeleverd</h2>
         <table border="1">
             <tr>
-                <th>Voorwerp Naam</th>
+                <th>Item ID</th>
+                <th>Item Naam</th>
+                <th>Item Nummer</th>
                 <th>Datum van Inleveren</th>
+                <th>Datum van Terugbrengen</th>
+                <th>Item Omschrijving</th>
+                <th>Item Status</th>
+                <!-- Add more columns as needed -->
             </tr>
             <?php
-            while ($row = $todayItemsResult->fetch_assoc()) {
-                echo "<tr><td>{$row['itemName']}</td><td>{$row['itemDin']}</td></tr>";
+            // Check if there are results
+            if ($todayItemsResult->num_rows > 0) {
+                while ($row = $todayItemsResult->fetch_assoc()) {
+                    echo "<tr>
+                            <td>{$row['itemId']}</td>
+                            <td>{$row['itemName']}</td>
+                            <td>{$row['itemNumber']}</td>
+                            <td>{$row['itemDin']}</td>
+                            <td>{$row['itemDout']}</td>
+                            <td>{$row['itemDescription']}</td>
+                            <td>{$row['itemState']}</td>
+                            <!-- Add more columns as needed -->
+                          </tr>";
+                }
+            } else {
+                echo "<tr><td colspan='8'>No items due today</td></tr>";
             }
             ?>
         </table>
@@ -86,12 +141,32 @@ $currentItemsResult = $conn->query($currentItemsQuery);
         <h2>Momenteel Uitgeleende Items</h2>
         <table border="1">
             <tr>
-                <th>Voorwerp Naam</th>
+                <th>Item ID</th>
+                <th>Item Naam</th>
+                <th>Item Nummer</th>
                 <th>Datum van Inleveren</th>
+                <th>Datum van Terugbrengen</th>
+                <th>Item Omschrijving</th>
+                <th>Item Status</th>
+                <!-- Add more columns as needed -->
             </tr>
             <?php
-            while ($row = $currentItemsResult->fetch_assoc()) {
-                echo "<tr><td>{$row['itemName']}</td><td>{$row['itemDin']}</td></tr>";
+            // Check if there are results
+            if ($currentItemsResult->num_rows > 0) {
+                while ($row = $currentItemsResult->fetch_assoc()) {
+                    echo "<tr>
+                            <td>{$row['itemId']}</td>
+                            <td>{$row['itemName']}</td>
+                            <td>{$row['itemNumber']}</td>
+                            <td>{$row['itemDin']}</td>
+                            <td>{$row['itemDout']}</td>
+                            <td>{$row['itemDescription']}</td>
+                            <td>{$row['itemState']}</td>
+                            <!-- Add more columns as needed -->
+                          </tr>";
+                }
+            } else {
+                echo "<tr><td colspan='8'>No currently borrowed items</td></tr>";
             }
             ?>
         </table>
