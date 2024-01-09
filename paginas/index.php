@@ -1,8 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 
-<head>
-    <!-- Add jQuery -->
+<head
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
     <meta charset="UTF-8">
@@ -144,7 +143,7 @@
         }
     </style>
 
-    <!-- Add the autocomplete script -->
+   
     <script>
         $(document).ready(function () {
             $('#search').keyup(function () {
@@ -152,7 +151,7 @@
 
                 if (query.length >= 2) {
                     $.ajax({
-                        url: 'autocomplete.php',
+                        url: '../includes/db_connection.php',
                         method: 'GET',
                         data: { query: query },
                         success: function (data) {
@@ -179,7 +178,6 @@
                 }
             });
 
-            // Handle click outside the autocomplete results to hide them
             $(document).on('click', function (e) {
                 if (!$(e.target).closest('#autocomplete-results').length) {
                     $('#autocomplete-results').hide();
