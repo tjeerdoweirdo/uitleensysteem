@@ -1,36 +1,54 @@
 <?php
-include("../includes/db_connection.php");
-include("../includes/header.php");
-include("../css/styles.css");
+session_start();
+include '../includes/header.php';
+if (!isset($_SESSION['user_id']) ) {
+    header('Location: login.php');
+    exit();
+}
+
+
+include('../includes/db_connection.php');
+
+function generateUniqueId() {
+    return 'category_' . time();
+}
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $category = isset($_POST["catName"]) ? trim($_POST["catName"]) : "";
+    $category = isset($_POST["category"]) ? trim($_POST["category"]) : "";
 
     if (!empty($category)) {
-        $sql = "INSERT INTO categories (catName) VALUES ('$catName')";
+        $sql = "INSERT INTO categories (catName) VALUES ('$category')";
         if ($conn->query($sql) === TRUE) {
-            // Insertion successful, you can add further logic if needed
+       
+            $lastInsertedId = $conn->insert_id;
+            $uniqueId = "category_" . $lastInsertedId;
+            echo "Category added successfully with ID: $lastInsertedId";
         } else {
             echo "Error: " . $sql . "<br>" . $conn->error;
         }
     }
+
+
+    header("Location: {$_SERVER['PHP_SELF']}");
+    exit();
 }
 
 if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["action"]) && $_GET["action"] === "remove" && isset($_GET["id"])) {
     $categoryId = $_GET["id"];
     $sql = "DELETE FROM categories WHERE catId = $categoryId";
-    
+
     if ($conn->query($sql) === TRUE) {
-        // Deletion successful, you can add further logic if needed
+        echo "Category removed successfully";
     } else {
         echo "Error: " . $sql . "<br>" . $conn->error;
     }
+
+    exit; 
 }
 
 $sql = "SELECT catId, catName FROM categories";
 $result = $conn->query($sql);
 
-// Close the database connection
 $conn->close();
 ?>
 
@@ -40,12 +58,8 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Category Manager</title>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
+    
         h1 {
             text-align: center;
         }
@@ -65,7 +79,7 @@ $conn->close();
             list-style-type: none;
             padding: 0;
         }
-        li {
+        .category-list li {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -85,24 +99,31 @@ $conn->close();
 </form>
 
 <h2>Your Categories</h2>
-<ul>
-    <?php
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            echo "<li id='category{$row['catId']}'><span>{$row['catName']}</span><button type='button' onclick='removeCategory({$row['catId']})'>Remove</button></li>";
+<div class="category-list">
+    <ul>
+        <?php
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $categoryId = $row['catId'];
+                $categoryName = $row['catName'];
+                $uniqueId = "category_" . $categoryId;
+                echo "<li id='{$uniqueId}'><span>{$categoryName}</span><button type='button' onclick='removeCategory({$categoryId})'>Remove</button></li>";
+            }
         }
-    }
-    ?>
-</ul>
+        ?>
+    </ul>
+</div>
 
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>
     function removeCategory(categoryId) {
         $.ajax({
             type: "GET",
-            url: "your_php_file.php",
+            url: "<?php echo $_SERVER['PHP_SELF']; ?>",
             data: { action: "remove", id: categoryId },
             success: function(response) {
-                $("#category" + categoryId).remove();
+                $("#" + "category_" + categoryId).remove();
+                console.log(response); 
             },
             error: function(xhr, status, error) {
                 console.error("Error removing category:", error);
