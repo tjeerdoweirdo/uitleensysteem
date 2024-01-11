@@ -170,7 +170,7 @@ img {
                 </div>
                 <div class="modal-footer">
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
-                      <button type="button" id="verwijderbutton" name="deleteitem" class="btn btn-danger">Verwijderen</button>
+                      <button type="submit" name="deleteitem" class="btn btn-danger">Verwijderen</button>
                 </div>
             </div>
         </form>
