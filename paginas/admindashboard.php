@@ -17,9 +17,10 @@ $delayedItemsResult = $conn->query($delayedItemsQuery);
 $todayItemsQuery = "SELECT * FROM items WHERE itemDout = '$currentDate'";
 $todayItemsResult = $conn->query($todayItemsQuery);
 
-// Query for currently borrowed items
-$currentItemsQuery = "SELECT * FROM items WHERE itemDout IS NULL";
+
+$currentItemsQuery = "SELECT * FROM items WHERE itemDout IS NULL AND itemDin IS NOT NULL";
 $currentItemsResult = $conn->query($currentItemsQuery);
+
 
 // Check for errors in query execution
 if (!$delayedItemsResult || !$todayItemsResult || !$currentItemsResult) {
