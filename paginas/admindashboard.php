@@ -13,45 +13,22 @@ $currentDate = date('Y-m-d');
 $delayedItemsQuery = "SELECT * FROM items WHERE itemDout < '$currentDate' AND itemDout IS NOT NULL";
 $delayedItemsResult = $conn->query($delayedItemsQuery);
 
-// Check for errors in query execution
-if (!$delayedItemsResult) {
-    die("Query failed: " . $conn->error);
-}
-
 // Query for items due today
 $todayItemsQuery = "SELECT * FROM items WHERE itemDout = '$currentDate'";
 $todayItemsResult = $conn->query($todayItemsQuery);
-
-// Check for errors in query execution
-if (!$todayItemsResult) {
-    die("Query failed: " . $conn->error);
-}
 
 // Query for currently borrowed items
 $currentItemsQuery = "SELECT * FROM items WHERE itemDout IS NULL";
 $currentItemsResult = $conn->query($currentItemsQuery);
 
 // Check for errors in query execution
-if (!$currentItemsResult) {
+if (!$delayedItemsResult || !$todayItemsResult || !$currentItemsResult) {
     die("Query failed: " . $conn->error);
 }
-
-// Function to handle item deletion
-function deleteItem($itemId) {
-    global $conn;
-    $deleteQuery = "DELETE FROM items WHERE itemId = '$itemId'";
-    $deleteResult = $conn->query($deleteQuery);
-
-    if (!$deleteResult) {
-        die("Deletion failed: " . $conn->error);
-    }
-}
-
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -64,8 +41,7 @@ function deleteItem($itemId) {
             margin-top: 20px;
         }
 
-        th,
-        td {
+        th, td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
@@ -80,7 +56,6 @@ function deleteItem($itemId) {
         }
     </style>
 </head>
-
 <body>
     <div class="section">
         <h2>Telaat ingeleverde items</h2>
@@ -89,10 +64,11 @@ function deleteItem($itemId) {
                 <th>Item ID</th>
                 <th>Item Naam</th>
                 <th>Item Nummer</th>
+                <th>Datum van Inleveren</th>
                 <th>Datum van Terugbrengen</th>
                 <th>Item Omschrijving</th>
                 <th>Item Status</th>
-                <th>Action</th>
+                <!-- Add more columns as needed -->
             </tr>
             <?php
             // Check if there are results
@@ -102,14 +78,15 @@ function deleteItem($itemId) {
                             <td>{$row['itemId']}</td>
                             <td>{$row['itemName']}</td>
                             <td>{$row['itemNumber']}</td>
+                            <td>{$row['itemDin']}</td>
                             <td>{$row['itemDout']}</td>
                             <td>{$row['itemDescription']}</td>
                             <td>{$row['itemState']}</td>
-                            <td><button onclick=\"deleteItem('{$row['itemId']}')\">Delete</button></td>
-                          </tr>";
+                            <!-- Add more columns as needed -->
+                        </tr>";
                 }
             } else {
-                echo "<tr><td colspan='7'>No delayed items found</td></tr>";
+                echo "<tr><td colspan='8'>No delayed items found</td></tr>";
             }
             ?>
         </table>
@@ -122,10 +99,11 @@ function deleteItem($itemId) {
                 <th>Item ID</th>
                 <th>Item Naam</th>
                 <th>Item Nummer</th>
+                <th>Datum van Inleveren</th>
                 <th>Datum van Terugbrengen</th>
                 <th>Item Omschrijving</th>
                 <th>Item Status</th>
-                <th>Action</th>
+                <!-- Add more columns as needed -->
             </tr>
             <?php
             // Check if there are results
@@ -135,14 +113,15 @@ function deleteItem($itemId) {
                             <td>{$row['itemId']}</td>
                             <td>{$row['itemName']}</td>
                             <td>{$row['itemNumber']}</td>
+                            <td>{$row['itemDin']}</td>
                             <td>{$row['itemDout']}</td>
                             <td>{$row['itemDescription']}</td>
                             <td>{$row['itemState']}</td>
-                            <td><button onclick=\"deleteItem('{$row['itemId']}')\">Delete</button></td>
-                          </tr>";
+                            <!-- Add more columns as needed -->
+                        </tr>";
                 }
             } else {
-                echo "<tr><td colspan='7'>No items due today</td></tr>";
+                echo "<tr><td colspan='8'>No items due today</td></tr>";
             }
             ?>
         </table>
@@ -155,10 +134,11 @@ function deleteItem($itemId) {
                 <th>Item ID</th>
                 <th>Item Naam</th>
                 <th>Item Nummer</th>
+                <th>Datum van Inleveren</th>
                 <th>Datum van Terugbrengen</th>
                 <th>Item Omschrijving</th>
                 <th>Item Status</th>
-                <th>Action</th>
+                <!-- Add more columns as needed -->
             </tr>
             <?php
             // Check if there are results
@@ -168,42 +148,23 @@ function deleteItem($itemId) {
                             <td>{$row['itemId']}</td>
                             <td>{$row['itemName']}</td>
                             <td>{$row['itemNumber']}</td>
+                            <td>{$row['itemDin']}</td>
                             <td>{$row['itemDout']}</td>
                             <td>{$row['itemDescription']}</td>
                             <td>{$row['itemState']}</td>
-                            <td><button onclick=\"deleteItem('{$row['itemId']}')\">Delete</button></td>
-                          </tr>";
+                            <!-- Add more columns as needed -->
+                        </tr>";
                 }
             } else {
-                echo "<tr><td colspan='7'>No currently borrowed items</td></tr>";
+                echo "<tr><td colspan='8'>No currently borrowed items</td></tr>";
             }
             ?>
         </table>
     </div>
-
-    <script>
-        // JavaScript function to confirm item deletion and send request to the server
-        function deleteItem(itemId) {
-            var confirmDelete = confirm("Are you sure you want to delete this item?");
-            if (confirmDelete) {
-                // Send an AJAX request to the server to delete the item
-                var xmlhttp = new XMLHttpRequest();
-                xmlhttp.onreadystatechange = function () {
-                    if (this.readyState == 4 && this.status == 200) {
-                        // Reload the page or update the table as needed
-                        location.reload();
-                    }
-                };
-                xmlhttp.open("GET", "delete_item.php?itemId=" + itemId, true);
-                xmlhttp.send();
-            }
-        }
-    </script>
 
     <?php
     // Sluit de databaseverbinding
     $conn->close();
     ?>
 </body>
-
 </html>
