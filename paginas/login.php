@@ -20,11 +20,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($result->num_rows == 1) {
             $row = $result->fetch_assoc();
-            // Compare plain text password
             if ($password === $row["usersPwd"]) {
                 $_SESSION["user_id"] = $row["usersId"];
                 $_SESSION["userName"] = $row["usersName"];
-                $_SESSION["userRole"] = $row["userRole"]; // Store user role in the session
+                $_SESSION["userRole"] = $row["userRole"]; 
                 header("Location: admindashboard.php");
                 exit();
             } else {
@@ -50,7 +49,7 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../css/styles.css">
     <title>Inloggen - Uitleen App</title>
     <style>
         body {

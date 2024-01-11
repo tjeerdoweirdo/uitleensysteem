@@ -1,6 +1,5 @@
 <?php
 require '../includes/db_connection.php';
-include '../includes/header.php';
 
 $cat_id = 1;
 
@@ -11,8 +10,6 @@ $result_product = $conn->query($product);
 $result_cat = $conn->query($cat);
 
 $row_cat = $result_cat->fetch_assoc();
-
-$categorie = "<h1>" . "categorie" . "</h1>";
 ?>
 
 <html>
@@ -21,11 +18,15 @@ $categorie = "<h1>" . "categorie" . "</h1>";
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/prod.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="../js/prod.js"></script>
 </head>
 
 <body>
-    <?php echo $categorie; ?>
+    <div class="bg-dark text-white">
+        <header><h1><?php echo $row_cat["cat_name"]; ?><h1></header>
+        <a class="nav-item"><a class="nav-link text-white" href="index.php">Home</a></a>
+    </div>
 
     <div class='cat_container'>
         <?php
@@ -52,3 +53,7 @@ $categorie = "<h1>" . "categorie" . "</h1>";
 </body>
 
 </html>
+
+<?php
+//include '../includes/footer.php'; 
+?>
