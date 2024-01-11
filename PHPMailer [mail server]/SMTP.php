@@ -281,8 +281,6 @@ class SMTP
         //Is this a (PSR)-3 logger?
         if ($this->Debugoutput instanceof \Psr\Log\LoggerInterface) {
             $this->Debugoutput->debug($str);
-            // HOTFIX - DON'T clear the runtime cache for runtime activated packages
-            // $this->runtimeClassLoadingInformationCache = array();
 
             return;
         }
