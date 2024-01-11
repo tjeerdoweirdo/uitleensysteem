@@ -38,12 +38,34 @@ include '../includes/header.php';
 
     <!-- Add Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Add Animate.css for animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
+    <style>
+        /* Optional: Add custom styles for animations */
+        .animated {
+            animation-duration: 1s;
+        }
+
+        /* Optional: Add custom animation for form elements */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .fadeIn {
+            animation-name: fadeIn;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h2>Item Toevoegen</h2>
-        <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" enctype="multipart/form-data">
+        <h2 class="animate__animated animate__fadeIn">Item Toevoegen</h2>
+        <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" enctype="multipart/form-data" class="animate__animated animate__fadeIn">
             <div class="form-group">
                 <label for="itemName">Item Naam:</label>
                 <input type="text" class="form-control" name="itemName" required>
@@ -74,15 +96,13 @@ include '../includes/header.php';
                 <input type="text" class="form-control" name="itemState">
             </div>
 
-            
-<div class="form-group">
-    <label for="itemPicture">Item Afbeelding:</label>
-    <div class="custom-file">
-        <input type="file" class="custom-file-input" id="itemPicture" name="itemPicture">
-        <label class="custom-file-label" for="itemPicture">Kies bestand</label>
-    </div>
-</div>
-
+            <div class="form-group">
+                <label for="itemPicture">Item Afbeelding:</label>
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="itemPicture" name="itemPicture">
+                    <label class="custom-file-label" for="itemPicture">Kies bestand</label>
+                </div>
+            </div>
 
             <button type="submit" class="btn btn-primary">Voeg Item Toe</button>
         </form>

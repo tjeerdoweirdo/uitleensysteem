@@ -55,6 +55,22 @@ if (!$delayedItemsResult || !$todayItemsResult || !$currentItemsResult) {
         .section {
             margin-top: 20px;
         }
+        /* Add this style in the <style> section of your HTML file or in an external CSS file */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+table tr {
+    animation: fadeIn 0.5s ease-out; /* Adjust the duration and easing as needed */
+}
+
     </style>
 </head>
 <body>
