@@ -2,10 +2,8 @@
 include("../includes/db_connection.php");
 
 // Fetch categories
-$categorySql = "SELECT DISTINCT catId, catName FROM categories"; 
+$categorySql = "SELECT DISTINCT catId, catName FROM categories";
 $categoryResult = $conn->query($categorySql);
-
-
 ?>
 
 <!DOCTYPE html>
@@ -56,11 +54,6 @@ $categoryResult = $conn->query($categorySql);
             padding: 20px;
         }
 
-        .hero {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
         .search-bar {
             margin-bottom: 20px;
             position: relative;
@@ -92,11 +85,20 @@ $categoryResult = $conn->query($categorySql);
             margin-bottom: 20px;
         }
 
-        .categories a {
+        .categories button {
             margin: 0 10px;
+            padding: 10px;
             text-decoration: none;
-            color: #333;
-            font-weight: bold;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .categories button:hover {
+            background-color: #0056b3;
         }
 
         .card-container {
@@ -155,7 +157,7 @@ $categoryResult = $conn->query($categorySql);
 
                 if (query.length >= 2) {
                     $.ajax({
-                        url: 'index.php', 
+                        url: 'index.php', // Updated URL
                         method: 'GET',
                         data: { query: query },
                         success: function (data) {
@@ -198,31 +200,20 @@ $categoryResult = $conn->query($categorySql);
     </header>
 
     <main>
-        <section class="hero">
-            <h2>Deel leen overzicht</h2>
-            <p>de overzicht voor alle elektronica</p>
-        </section>
-
         <section class="search-bar">
             <input type="text" id="search" name="search" placeholder="Zoeken...">
             <div id="autocomplete-results"></div>
         </section>
 
         <section class="categories">
-            <h3>Categories</h3>
             <?php
-            $categorySql = "SELECT DISTINCT catId, catName FROM categories";
-            $categoryResult = $conn->query($categorySql);
-
-
-            while ($row = mysqli_fetch_assoc($categoryResult)) {
-                echo '<a href="#" class="category-link" data-category="' . htmlspecialchars($row['catName']) . '">' . htmlspecialchars($row['catName']) . '</a>';
+            while ($row = $categoryResult->fetch_assoc()) {
+                echo '<button class="category-btn" data-category="' . htmlspecialchars($row['catName']) . '">' . htmlspecialchars($row['catName']) . '</button>';
             }
             ?>
         </section>
 
-        <div class="card-container">
-        
+      
         </div>
     </main>
 </body>
