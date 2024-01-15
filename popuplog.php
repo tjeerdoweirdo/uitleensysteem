@@ -19,10 +19,9 @@ img {
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Importeer Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    </link>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"></link>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <title>Document</title>
 </head>
 
@@ -34,9 +33,11 @@ img {
                 foreach ($result as $row) {
 
                     ?>
-                    <tr data-item-itemid="<?php echo $row['itemId']; ?>" data-item-name="<?php echo $row['itemName']; ?>"
+                    <tr data-item-itemid="<?php echo $row['itemId']; ?>" 
+                        data-item-name="<?php echo $row['itemName']; ?>"
                         data-item-description="<?php echo $row['itemDescription']; ?>"
-                        data-item-number="<?php echo $row['itemNumber']; ?>" data-item-dout="<?php echo $row['itemDout']; ?>"
+                        data-item-number="<?php echo $row['itemNumber']; ?>" 
+                        data-item-dout="<?php echo $row['itemDout']; ?>"
                         data-item-din="<?php echo $row['itemDin']; ?>"
                         data-item-picture="<?php echo base64_encode($row['itemPicture']); ?>"
                         data-item-state="<?php echo $row['itemState']; ?>">
@@ -49,8 +50,8 @@ img {
                         <td>
                             <?php echo $row['itemState']; ?>
                         </td>
-                        <td><button type="button" class="btn btn-primary meer" data-bs-toggle="modal"
-                                data-bs-target="#modal1">Meer...</button> </td>
+                        <td><button type="button" class="btn btn-primary meer" data-bs-toggle="modal" data-bs-target="#modal1">Meer...</button> </td>
+                        <td><button type="button" class="btn btn-danger verwijder" data-bs-target="#verwijdermodal" data-bs-toggle="verwijdermodal"><i class="bi bi-trash"></i></button></td>
                     </tr>
                     <?php
                 }
@@ -142,7 +143,7 @@ img {
                     </div>
 </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger verwijder" data-bs-target="#verwijdermodal" data-bs-toggle="verwijdermodal">Verwijderen</button>
+                       <button type="button" class="btn btn-danger verwijder" data-bs-target="#verwijdermodal" data-bs-toggle="verwijdermodal">Verwijderen</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
                         <button type="submit" name="savedata" class="btn btn-primary">Opslaan</button>
                     </div>
@@ -164,13 +165,14 @@ img {
                     <button type=button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div> 
                 <form method="POST" action="includes/deleteitem.php">
-                    <div class="modal-body">
-                    <input type="hidden" name="delete_id" id="delete_id">
-                        <p>Weet u zeker dat u dit item wilt verwijderen?</p>
+                 <input type="hidden" name="delete_id" id="delete_id">
+                <div class="modal-body">
+                
+                <p>Weet u zeker dat u dit item wilt verwijderen?</p>
                 </div>
                 <div class="modal-footer">
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
-                      <button type="submit" name="deleteitem" class="btn btn-danger">Verwijderen</button>
+                      <button type="submit" name="deleteitem" class="btn btn-danger verwijderen">Verwijderen</button>
                 </div>
             </div>
         </form>
@@ -190,8 +192,12 @@ $(document).ready(function () {
     $('.verwijder').on('click', function () {
         $('#verwijdermodal').modal('show');
 
+        console.log('Delete ID:', $('#delete_id').val());
+
         var $tr = $(this).closest('tr');
-        var itemId = $tr.data('item-itemid');
+        var itemId = $tr.data('itemItemid');
+        console.log('Item ID:', itemId); // Check if the item ID is retrieved correctly
+
         $('#delete_id').val(itemId);
     });
 });
