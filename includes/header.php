@@ -24,8 +24,14 @@ if (isset($_GET['logout'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<style>
+h1 {
+text-align: center;
+}
+</style>
 </head>
 <body>
+
 
 
 
@@ -33,7 +39,7 @@ if (isset($_GET['logout'])) {
     <div class="container">
         <h1>Admin Panel</h1>
         <nav>
-            <ul class="nav">
+            <ul class="nav justify-content-center">
                 <li class="nav-item"><a class="nav-link text-white" href="admindashboard.php">Dashboard</a></li>
                 <li class="nav-item"><a class="nav-link text-white" href="add_item.php">Producten toevoegen</a></li>
                 <li class="nav-item"><a class="nav-link text-white" href="gebruikertvg.php">Gebruiker toevoegen</a></li>
