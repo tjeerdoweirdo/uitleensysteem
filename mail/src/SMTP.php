@@ -278,7 +278,7 @@ class SMTP
         if ($level > $this->do_debug) {
             return;
         }
-        //Is this a (PSR)-3 logger?
+        //Is this a PSR-3 logger?
         if ($this->Debugoutput instanceof \Psr\Log\LoggerInterface) {
             $this->Debugoutput->debug($str);
 

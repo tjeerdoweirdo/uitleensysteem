@@ -1,16 +1,24 @@
+<?php
+include("../includes/db_connection.php");
+
+// Fetch categories
+$categorySql = "SELECT DISTINCT catId, catName FROM categories";
+$categoryResult = $conn->query($categorySql);
+?>
+
 <!DOCTYPE html>
 <html lang="nl">
 
-<head
+<head>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/styles.css">
     <title>elektronica lenen App</title>
-   <style>
-    body {
+
+    <style>
+        body {
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
@@ -46,17 +54,11 @@
             padding: 20px;
         }
 
-        .hero {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
         .search-bar {
             margin-bottom: 20px;
             position: relative;
         }
 
-        /* Add this style for autocomplete results */
         #autocomplete-results {
             position: absolute;
             width: 100%;
@@ -76,6 +78,27 @@
 
         #autocomplete-results div:hover {
             background-color: #f0f0f0;
+        }
+
+        .categories {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .categories button {
+            margin: 0 10px;
+            padding: 10px;
+            text-decoration: none;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .categories button:hover {
+            background-color: #0056b3;
         }
 
         .card-container {
@@ -120,22 +143,6 @@
             flex: 1;
         }
 
-        .btn-primary {
-            color: #fff;
-            background-color: #007bff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 14px;
-            cursor: pointer;
-        }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
-
         @media (max-width: 768px) {
             .card {
                 flex: 0 0 calc(50% - 20px);
@@ -143,7 +150,6 @@
         }
     </style>
 
-   
     <script>
         $(document).ready(function () {
             $('#search').keyup(function () {
@@ -151,7 +157,7 @@
 
                 if (query.length >= 2) {
                     $.ajax({
-                        url: '../includes/db_connection.php',
+                        url: 'index.php', // Updated URL
                         method: 'GET',
                         data: { query: query },
                         success: function (data) {
@@ -194,47 +200,26 @@
     </header>
 
     <main>
-        <section class="hero">
+    <section class="hero">
             <h2>Deel leen overzicht</h2>
             <p>de overzicht voor alle elektronica</p>
         </section>
-
         <section class="search-bar">
             <input type="text" id="search" name="search" placeholder="Zoeken...">
             <div id="autocomplete-results"></div>
         </section>
 
-        <div class="card-container">
+        <section class="categories">
+            <?php
+            while ($row = $categoryResult->fetch_assoc()) {
+                echo '<button class="category-btn" data-category="' . htmlspecialchars($row['catName']) . '">' . htmlspecialchars($row['catName']) . '</button>';
+            }
+            ?>
+        </section>
+
+       
         </div>
     </main>
 </body>
 
 </html>
-
-<?php
-include("../includes/db_connection.php");
-
-
-
-
-if (isset($_GET['query'])) {
-    $query = $_GET['query'];
-
-    $sql = "SELECT itemName FROM items WHERE itemName LIKE '%$query%'";
-    $result = mysqli_query($db_connection, $sql);
-
-    if (!$result) {
-        die('Error executing query: ' . mysqli_error($db_connection));
-    }
-
-    $data = array();
-
-    while ($row = mysqli_fetch_assoc($result)) {
-        $data[] = $row['itemName'];
-    }
-
-    echo json_encode($data);
-}
-?>
-
- 

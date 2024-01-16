@@ -1,4 +1,12 @@
 <?php
+
+session_start();
+
+if (!isset($_SESSION['user_id']) ) {
+    header('Location: login.php');
+    exit();
+}
+
 require_once('../includes/db_connection.php');
 
 // Controleer de verbinding
@@ -17,15 +25,41 @@ $delayedItemsResult = $conn->query($delayedItemsQuery);
 $todayItemsQuery = "SELECT * FROM items WHERE itemDout = '$currentDate'";
 $todayItemsResult = $conn->query($todayItemsQuery);
 
-
 $currentItemsQuery = "SELECT * FROM items WHERE itemDout IS NULL AND itemDin IS NOT NULL";
 $currentItemsResult = $conn->query($currentItemsQuery);
 
+// Handle item addition form submission
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['addItem'])) {
+    $itemName = htmlspecialchars($_POST['itemName']);
+    $itemNumber = htmlspecialchars($_POST['itemNumber']);
+    $itemDin = htmlspecialchars($_POST['itemDin']);
+    $itemDout = htmlspecialchars($_POST['itemDout']);
+    $itemDescription = htmlspecialchars($_POST['itemDescription']);
+    $itemState = htmlspecialchars($_POST['itemState']);
 
-// Check for errors in query execution
-if (!$delayedItemsResult || !$todayItemsResult || !$currentItemsResult) {
-    die("Query failed: " . $conn->error);
+    $addItemQuery = "INSERT INTO items (itemName, itemNumber, itemDin, itemDout, itemDescription, itemState)
+                     VALUES ('$itemName', '$itemNumber', '$itemDin', '$itemDout', '$itemDescription', '$itemState')";
+
+    if ($conn->query($addItemQuery) === TRUE) {
+        echo "Item added successfully!";
+    } else {
+        echo "Error adding item: " . $conn->error;
+    }
 }
+
+// Handle item deletion
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['deleteItemId'])) {
+    $deleteItemId = htmlspecialchars($_POST['deleteItemId']);
+
+    $deleteItemQuery = "DELETE FROM items WHERE itemId = '$deleteItemId'";
+
+    if ($conn->query($deleteItemQuery) === TRUE) {
+        echo "Item deleted successfully!";
+    } else {
+        echo "Error deleting item: " . $conn->error;
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -54,26 +88,51 @@ if (!$delayedItemsResult || !$todayItemsResult || !$currentItemsResult) {
 
         .section {
             margin-top: 20px;
+            animation: fadeIn 1s ease-in-out;
         }
-        /* Add this style in the <style> section of your HTML file or in an external CSS file */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
 
-table tr {
-    animation: fadeIn 0.5s ease-out; /* Adjust the duration and easing as needed */
-}
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
+        table tr {
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        h2 {
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        form {
+            display: inline; /* Keep forms in the same line */
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
+
     <div class="section">
         <h2>Telaat ingeleverde items</h2>
         <table border="1">
@@ -85,7 +144,7 @@ table tr {
                 <th>Datum van Terugbrengen</th>
                 <th>Item Omschrijving</th>
                 <th>Item Status</th>
-                <!-- Add more columns as needed -->
+                <th>Action</th>
             </tr>
             <?php
             // Check if there are results
@@ -99,7 +158,12 @@ table tr {
                             <td>{$row['itemDout']}</td>
                             <td>{$row['itemDescription']}</td>
                             <td>{$row['itemState']}</td>
-                            <!-- Add more columns as needed -->
+                            <td>
+                                <form method='post' action='{$_SERVER["PHP_SELF"]}'>
+                                    <input type='hidden' name='deleteItemId' value='{$row['itemId']}'>
+                                    <input type='submit' value='Delete'>
+                                </form>
+                            </td>
                         </tr>";
                 }
             } else {
@@ -120,7 +184,7 @@ table tr {
                 <th>Datum van Terugbrengen</th>
                 <th>Item Omschrijving</th>
                 <th>Item Status</th>
-                <!-- Add more columns as needed -->
+                <th>Action</th>
             </tr>
             <?php
             // Check if there are results
@@ -134,7 +198,12 @@ table tr {
                             <td>{$row['itemDout']}</td>
                             <td>{$row['itemDescription']}</td>
                             <td>{$row['itemState']}</td>
-                            <!-- Add more columns as needed -->
+                            <td>
+                                <form method='post' action='{$_SERVER["PHP_SELF"]}'>
+                                    <input type='hidden' name='deleteItemId' value='{$row['itemId']}'>
+                                    <input type='submit' value='Delete'>
+                                </form>
+                            </td>
                         </tr>";
                 }
             } else {
@@ -155,7 +224,7 @@ table tr {
                 <th>Datum van Terugbrengen</th>
                 <th>Item Omschrijving</th>
                 <th>Item Status</th>
-                <!-- Add more columns as needed -->
+                <th>Action</th>
             </tr>
             <?php
             // Check if there are results
@@ -169,7 +238,12 @@ table tr {
                             <td>{$row['itemDout']}</td>
                             <td>{$row['itemDescription']}</td>
                             <td>{$row['itemState']}</td>
-                            <!-- Add more columns as needed -->
+                            <td>
+                                <form method='post' action='{$_SERVER["PHP_SELF"]}'>
+                                    <input type='hidden' name='deleteItemId' value='{$row['itemId']}'>
+                                    <input type='submit' value='Delete'>
+                                </form>
+                            </td>
                         </tr>";
                 }
             } else {
