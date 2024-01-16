@@ -12,7 +12,6 @@ if(isset($_POST['savedata'])){
     $omschrijving = $_POST['omschrijving'];
     $staat = $_POST['staat'];
     $foto = $_POST['foto'];
-    $catId = $_POST['categorie']; 
 
     if(isset($_FILES['foto']) && $_FILES['foto']['size'] > 0 && $_FILES['foto']['error'] === UPLOAD_ERR_OK) {
         $foto = $_FILES['foto']['tmp_name'];
@@ -21,7 +20,7 @@ if(isset($_POST['savedata'])){
         $updateImageQuery = "UPDATE items SET itemPicture='$imageData' WHERE itemId='$id'";
         $updateImageResult = mysqli_query($conn, $updateImageQuery);
     }
-    $sql = "UPDATE items SET itemName='$item', itemNumber='$nummer', itemDin='$datumin', itemDout='$datumuit', itemDescription='$omschrijving', itemState='$staat', catId='$catId' WHERE itemId='$id'";
+    $sql = "UPDATE items SET itemName='$item', itemNumber='$nummer', itemDin='$datumin', itemDout='$datumuit', itemDescription='$omschrijving', itemState='$staat' WHERE itemId='$id' ";
     $result = mysqli_query($conn, $sql);
     
     if($result){

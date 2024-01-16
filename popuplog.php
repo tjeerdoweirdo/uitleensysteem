@@ -92,12 +92,21 @@ img {
                                         <input type="text" name="nummer" id="nummer" class="form-control"
                                             placeholder="">
                                     </div>
-                                    
                                     <div class="form-group">
-                                        <label>Categorie:</label>
-                                        <input type="text" name="cat" id="cat" class="form-control"
-                                            placeholder="">
-                                    </div>
+                                    <label>Categorie:</label>
+                                    <select class="form-select" id="categorie" name="categorie">
+                                        <?php
+                                        include('includes/db_connection.php');
+                                        $categories = mysqli_query($conn, "SELECT * FROM categories");
+                                        while ($category = mysqli_fetch_array($categories)) {
+                                            $selected = ($category['catId'] == $row['catId']) ? 'selected' : '';
+                                            ?>
+                                            <option value="<?php echo $category['catId']; ?>" <?php echo $selected; ?>>
+                                                <?php echo $category['catName']; ?>
+                                            </option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
 
                                     <div class="d-flex mb-3" style="margin-bottom: 0px!important;">
                                         <div class="form-group p-2" style="padding-left: 0px!important;">
@@ -126,8 +135,7 @@ img {
 
                                     <div class="form-group">
                                         <label>Omschrijving:</label>
-                                        <input type="text" name="omschrijving" id="omschrijving" class="form-control"
-                                            placeholder="">
+                                        <textarea rows="7" name="omschrijving" id="omschrijving" class="form-control"></textarea>
                                     </div>
                                 </div>
                             
@@ -140,10 +148,10 @@ img {
                                 </div>
                             </div>
                         </div>
+                        <!-- Hier logs -->
                     </div>
 </div>
                     <div class="modal-footer">
-                       <button type="button" class="btn btn-danger verwijder" data-bs-target="#verwijdermodal" data-bs-toggle="verwijdermodal">Verwijderen</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
                         <button type="submit" name="savedata" class="btn btn-primary">Opslaan</button>
                     </div>
@@ -157,7 +165,6 @@ img {
                                         <!-- Verwijder Modal -->
 
     <div class="modal fade" id="verwijdermodal" tabindex="-1" aria-labelledby="verwijdermodalLabel" aria-hidden="true">
-   
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
@@ -207,38 +214,73 @@ $(document).ready(function () {
 <script>
 
 
+$(document).ready(function () {
+    $('.meer').on('click', function () {
+        $('#modal1').modal('show');
+
+        var $tr = $(this).closest('tr');
+
+        var itemId = $tr.data('item-itemid');
+        var itemName = $tr.data('item-name');
+        var itemDescription = $tr.data('item-description');
+        var itemNumber = $tr.data('item-number');
+        var itemDout = $tr.data('item-dout');
+        var itemDin = $tr.data('item-din');
+        var itemPicture = $tr.data('item-picture');
+        var itemState = $tr.data('item-state');
+
+        $('#modal1Label').text(itemName);
+
+        $('#update_id').val(itemId);
+        $('#item').val(itemName);
+        $('#omschrijving').val(itemDescription);
+        $('#nummer').val(itemNumber);
+        $('#datumuit').val(itemDout);
+        $('#datumin').val(itemDin);
+        $('#staat').val(itemState);
+        $('#foto').val(itemPicture);
+
+        // Convert string dates to JavaScript Date objects
+        var today = new Date();
+        var datumUit = new Date(itemDout);
+        var datumIn = new Date(itemDin);
+
+        // Selecteer 'staat' naam/id uit document
+        var selectElement = $('#staat');
+
+        // Controleer of de vandaag tussen de twee data's in zit
+        // Als vandaag (today value) groter is dan de datum uitgeleend (datumUit) EN kleiner is dan datum dat het ingelevert moet worden (datumIn)...
+        if (today >= datumUit && today <= datumIn) {
+            selectElement.val('Uitgeleend').prop('selected', true);
+        }
+    });
+});
+
+</script>
+
+<script>
     $(document).ready(function () {
         $('.meer').on('click', function () {
-            $('#modal1').modal('show');
 
-            var $tr = $(this).closest('tr');
+            // Pakt de datum van vandaag
+            var today = new Date();
 
-            var itemId = $tr.data('item-itemid');
-            var itemName = $tr.data('item-name');
-            var itemDescription = $tr.data('item-description');
-            var itemNumber = $tr.data('item-number');
-            var itemDout = $tr.data('item-dout');
-            var itemDin = $tr.data('item-din');
-            var itemPicture = $tr.data('item-picture');
-            var itemState = $tr.data('item-state');
+            // Pakt de inputs van de data
+            var datumUit = new Date($('#datumuit').val());
+            var datumIn = new Date($('#datumin').val());
 
-            $('#modal1Label').text(itemName);
+            // Selecteer 'staat' naam/id uit document
+            var selectElement = $('#staat');
 
-            $('#update_id').val(itemId);
-            $('#item').val(itemName);
-            $('#omschrijving').val(itemDescription);
-            $('#nummer').val(itemNumber);
-            $('#datumuit').val(itemDout);
-            $('#datumin').val(itemDin);
-            $('#staat').val(itemState);
-            $('#foto').val(itemPicture);
-
-
+            // Controleer of de vandaag tussen de twee data's in zit
+            // Als vandaag (today value) groter is dan de datum uitgeleend (datumUit) EN kleiner is dan datum dat het ingelevert moet worden (datumIn)...
+            if (today >= datumUit && today <= datumIn) {
+                selectElement.val('Uitgeleend');
+            }
         });
     });
 </script>
 
-</html>
 
 <!-- // echo $row['itemName'];
 // echo $row['itemNumber'];
