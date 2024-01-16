@@ -214,48 +214,35 @@ $(document).ready(function () {
 <script>
 
 
-$(document).ready(function () {
-    $('.meer').on('click', function () {
-        $('#modal1').modal('show');
+    $(document).ready(function () {
+        $('.meer').on('click', function () {
+            $('#modal1').modal('show');
 
-        var $tr = $(this).closest('tr');
+            var $tr = $(this).closest('tr');
 
-        var itemId = $tr.data('item-itemid');
-        var itemName = $tr.data('item-name');
-        var itemDescription = $tr.data('item-description');
-        var itemNumber = $tr.data('item-number');
-        var itemDout = $tr.data('item-dout');
-        var itemDin = $tr.data('item-din');
-        var itemPicture = $tr.data('item-picture');
-        var itemState = $tr.data('item-state');
+            var itemId = $tr.data('item-itemid');
+            var itemName = $tr.data('item-name');
+            var itemDescription = $tr.data('item-description');
+            var itemNumber = $tr.data('item-number');
+            var itemDout = $tr.data('item-dout');
+            var itemDin = $tr.data('item-din');
+            var itemPicture = $tr.data('item-picture');
+            var itemState = $tr.data('item-state');
 
-        $('#modal1Label').text(itemName);
+            $('#modal1Label').text(itemName);
 
-        $('#update_id').val(itemId);
-        $('#item').val(itemName);
-        $('#omschrijving').val(itemDescription);
-        $('#nummer').val(itemNumber);
-        $('#datumuit').val(itemDout);
-        $('#datumin').val(itemDin);
-        $('#staat').val(itemState);
-        $('#foto').val(itemPicture);
+            $('#update_id').val(itemId);
+            $('#item').val(itemName);
+            $('#omschrijving').val(itemDescription);
+            $('#nummer').val(itemNumber);
+            $('#datumuit').val(itemDout);
+            $('#datumin').val(itemDin);
+            $('#staat').val(itemState);
+            $('#foto').val(itemPicture);
 
-        // Convert string dates to JavaScript Date objects
-        var today = new Date();
-        var datumUit = new Date(itemDout);
-        var datumIn = new Date(itemDin);
 
-        // Selecteer 'staat' naam/id uit document
-        var selectElement = $('#staat');
-
-        // Controleer of de vandaag tussen de twee data's in zit
-        // Als vandaag (today value) groter is dan de datum uitgeleend (datumUit) EN kleiner is dan datum dat het ingelevert moet worden (datumIn)...
-        if (today >= datumUit && today <= datumIn) {
-            selectElement.val('Uitgeleend').prop('selected', true);
-        }
+        });
     });
-});
-
 </script>
 
 <script>
@@ -276,6 +263,8 @@ $(document).ready(function () {
             // Als vandaag (today value) groter is dan de datum uitgeleend (datumUit) EN kleiner is dan datum dat het ingelevert moet worden (datumIn)...
             if (today >= datumUit && today <= datumIn) {
                 selectElement.val('Uitgeleend');
+            } else {
+                selectElement.val(''); // Set it to empty if not between the dates
             }
         });
     });
