@@ -1,11 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Manager</title>
+    <style>
+        h2, h3, form, .category-list {
+            opacity: 0;
+            animation: fadeIn 1s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        h2 {
+            text-align: center;
+        }
+        
+        h3 {
+            text-align: center;
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        input {
+            padding: 8px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 8px 12px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .category-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
 <?php
 session_start();
 include '../includes/header.php';
-if (!isset($_SESSION['user_id']) ) {
+if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit();
 }
-
 
 include('../includes/db_connection.php');
 
@@ -19,15 +83,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (!empty($category)) {
         $sql = "INSERT INTO categories (catName) VALUES ('$category')";
         if ($conn->query($sql) === TRUE) {
-       
             $lastInsertedId = $conn->insert_id;
             $uniqueId = "category_" . $lastInsertedId;
             echo "Category added successfully with ID: $lastInsertedId";
+
+            // Echo the new category with fade-in class
+            echo "<li id='{$uniqueId}'><span>{$category}</span><button type='button' onclick='removeCategory({$lastInsertedId})'>Remove</button></li>";
         } else {
             echo "Error: " . $sql . "<br>" . $conn->error;
         }
     }
-
 
     header("Location: {$_SERVER['PHP_SELF']}");
     exit();
@@ -43,7 +108,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["action"]) && $_GET["act
         echo "Error: " . $sql . "<br>" . $conn->error;
     }
 
-    exit; 
+    exit;
 }
 
 $sql = "SELECT catId, catName FROM categories";
@@ -52,46 +117,7 @@ $result = $conn->query($sql);
 $conn->close();
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Category Manager</title>
-    <style>
-    
-        h1 {
-            text-align: center;
-        }
-        form {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        input {
-            padding: 8px;
-            margin-right: 10px;
-        }
-        button {
-            padding: 8px 12px;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        .category-list li {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            border: 1px solid #ddd;
-            margin-bottom: 5px;
-        }
-    </style>
-</head>
-<body>
-
-<h1>Category Manager</h1>
+<h2>Category Manager</h2>
 
 <form method="post" action="">
     <input type="text" name="category" placeholder="Enter a new category" required>
@@ -123,7 +149,7 @@ $conn->close();
             data: { action: "remove", id: categoryId },
             success: function(response) {
                 $("#" + "category_" + categoryId).remove();
-                console.log(response); 
+                console.log(response);
             },
             error: function(xhr, status, error) {
                 console.error("Error removing category:", error);
