@@ -88,6 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['deleteItemId'])) {
 
         .section {
             margin-top: 20px;
+            animation: fadeIn 1s ease-in-out;
         }
 
         @keyframes fadeIn {
@@ -102,7 +103,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['deleteItemId'])) {
         }
 
         table tr {
-            animation: fadeIn 0.5s ease-out;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        h2 {
+            text-align: center;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        form {
+            display: inline; /* Keep forms in the same line */
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
         }
     </style>
 </head>

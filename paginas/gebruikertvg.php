@@ -93,6 +93,10 @@ $result = $conn->query($sql_select);
         .fade-in {
             animation: fadeIn 1s ease-in-out;
         }
+        
+        h2 {
+            text-align: center;
+        }
     </style>
 </head>
 
