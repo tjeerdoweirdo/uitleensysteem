@@ -1,11 +1,29 @@
 <?php
 include("../includes/db_connection.php");
 
-// Fetch categories
+if (isset($_GET['query'])) {
+    $searchTerm = $_GET['query'];
+
+    $itemSearchSql = "SELECT itemName FROM items WHERE itemName LIKE '%{$searchTerm}%' LIMIT 5";
+    $itemSearchResult = $conn->query($itemSearchSql);
+
+    $results = array();
+    while ($row = $itemSearchResult->fetch_assoc()) {
+        $results[] = $row['itemName'];
+    }
+
+    
+    echo json_encode($results);
+    exit();
+}
+?>
+
+<?php
+include("../includes/db_connection.php");
+
 $categorySql = "SELECT DISTINCT catId, catName FROM categories";
 $categoryResult = $conn->query($categorySql);
 ?>
-
 <!DOCTYPE html>
 <html lang="nl">
 
@@ -150,6 +168,7 @@ $categoryResult = $conn->query($categorySql);
         }
     </style>
 
+
     <script>
         $(document).ready(function () {
             $('#search').keyup(function () {
@@ -157,7 +176,7 @@ $categoryResult = $conn->query($categorySql);
 
                 if (query.length >= 2) {
                     $.ajax({
-                        url: 'index.php', // Updated URL
+                        url: 'index.php',
                         method: 'GET',
                         data: { query: query },
                         success: function (data) {
@@ -200,7 +219,7 @@ $categoryResult = $conn->query($categorySql);
     </header>
 
     <main>
-    <section class="hero">
+        <section class="hero">
             <h2>Deel leen overzicht</h2>
             <p>de overzicht voor alle elektronica</p>
         </section>
@@ -216,9 +235,6 @@ $categoryResult = $conn->query($categorySql);
             }
             ?>
         </section>
-
-       
-        </div>
     </main>
 </body>
 
