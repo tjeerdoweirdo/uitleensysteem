@@ -214,44 +214,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['deleteItemId'])) {
     </div>
 
     <div class="section">
-        <h2>Momenteel Uitgeleende Items</h2>
-        <table border="1">
-            <tr>
-                <th>Item ID</th>
-                <th>Item Naam</th>
-                <th>Item Nummer</th>
-                <th>Datum van Inleveren</th>
-                <th>Datum van Terugbrengen</th>
-                <th>Item Omschrijving</th>
-                <th>Item Status</th>
-                <th>Action</th>
-            </tr>
-            <?php
-            // Check if there are results
-            if ($currentItemsResult->num_rows > 0) {
-                while ($row = $currentItemsResult->fetch_assoc()) {
-                    echo "<tr>
-                            <td>{$row['itemId']}</td>
-                            <td>{$row['itemName']}</td>
-                            <td>{$row['itemNumber']}</td>
-                            <td>{$row['itemDin']}</td>
-                            <td>{$row['itemDout']}</td>
-                            <td>{$row['itemDescription']}</td>
-                            <td>{$row['itemState']}</td>
-                            <td>
-                                <form method='post' action='{$_SERVER["PHP_SELF"]}'>
-                                    <input type='hidden' name='deleteItemId' value='{$row['itemId']}'>
-                                    <input type='submit' value='Delete'>
-                                </form>
-                            </td>
-                        </tr>";
-                }
-            } else {
-                echo "<tr><td colspan='8'>No currently borrowed items</td></tr>";
+    <h2>Momenteel Uitgeleende Items</h2>
+    <table border="1">
+        <tr>
+            <th>Item ID</th>
+            <th>Item Naam</th>
+            <th>Item Nummer</th>
+            <th>Datum van Inleveren</th>
+            <th>Datum van Terugbrengen</th>
+            <th>Item Omschrijving</th>
+            <th>Item Status</th>
+            <th>Action</th>
+        </tr>
+        <?php
+        // Query for items due from 2 years before today
+        $currentItemsQuery = "SELECT * FROM items WHERE itemDout IS NOT NULL AND DATE(itemDout) < DATE_SUB(CURDATE(), INTERVAL 2 YEAR)";
+        $currentItemsResult = $conn->query($currentItemsQuery);
+
+        // Check if there are results
+        if ($currentItemsResult->num_rows > 0) {
+            while ($row = $currentItemsResult->fetch_assoc()) {
+                echo "<tr>
+                        <td>{$row['itemId']}</td>
+                        <td>{$row['itemName']}</td>
+                        <td>{$row['itemNumber']}</td>
+                        <td>" . ($row['itemDin'] ? $row['itemDin'] : 'N/A') . "</td>
+                        <td>" . ($row['itemDout'] ? $row['itemDout'] : 'N/A') . "</td>
+                        <td>{$row['itemDescription']}</td>
+                        <td>{$row['itemState']}</td>
+                        <td>
+                            <form method='post' action='{$_SERVER["PHP_SELF"]}'>
+                                <input type='hidden' name='deleteItemId' value='{$row['itemId']}'>
+                                <input type='submit' value='Delete'>
+                            </form>
+                        </td>
+                    </tr>";
             }
-            ?>
-        </table>
-    </div>
+        } else {
+            echo "<tr><td colspan='8'>No currently borrowed items</td></tr>";
+        }
+        ?>
+    </table>
+</div>
+
 
     <?php
     // Sluit de databaseverbinding
