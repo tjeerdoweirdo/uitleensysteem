@@ -1,10 +1,10 @@
 <?php
 require '../includes/db_connection.php';
 
-$cat_id = 1;
+$catId = 1;
 
-$product = "SELECT photo, name, serialnumber, status, id FROM products WHERE cat_id = $cat_id";
-$cat = "SELECT cat_name, cat_id FROM category WHERE cat_id = $cat_id";
+$cat = "SELECT catName FROM categories WHERE $catId";
+$product = "SELECT itemPicture, itemName, itemNumber, itemState, itemId, itemDin, itemDout, itemDescription FROM items WHERE $catId";
 
 $result_product = $conn->query($product);
 $result_cat = $conn->query($cat);
@@ -24,7 +24,9 @@ $row_cat = $result_cat->fetch_assoc();
 
 <body>
     <div class="bg-dark text-white">
-        <header><h1><?php echo $row_cat["cat_name"]; ?><h1></header>
+        <header>
+            <h1><?php echo $row_cat["catName"]; ?><h1>
+        </header>
         <a class="nav-item"><a class="nav-link text-white" href="index.php">Home</a></a>
     </div>
 
@@ -32,16 +34,16 @@ $row_cat = $result_cat->fetch_assoc();
         <?php
         if ($result_product->num_rows > 0) {
             while ($row_product = $result_product->fetch_assoc()) {
-                if ($row_product["status"] == 1) {
+                if ($row_product["itemState"] == 1) {
                     $status = "beschikbaar";
                 } else {
                     $status = "niet verkrijgbaar";
                 }
 
-                echo "<div class='product_card fade-in-row' onclick='redirectToProduct(" . $row_product["id"] . ")'>";
+                echo "<div class='product_card fade-in-row' onclick='redirectToProduct(" . $row_product["itemId"] . ")'>";
                 echo "<img src='" . htmlspecialchars($row_product["photo"], ENT_QUOTES, 'UTF-8') . "' alt='Product Photo'>";
-                echo "<p>" . htmlspecialchars($row_product["name"], ENT_QUOTES, 'UTF-8') . "</p>";
-                echo "<p>" . htmlspecialchars($row_product["serialnumber"], ENT_QUOTES, 'UTF-8') . "</p>";
+                echo "<p>" . htmlspecialchars($row_product["itemName"], ENT_QUOTES, 'UTF-8') . "</p>";
+                echo "<p>" . htmlspecialchars($row_product["itemNumber"], ENT_QUOTES, 'UTF-8') . "</p>";
                 echo "<p>" . $status . "</p>";
                 echo "</div>";
             }
