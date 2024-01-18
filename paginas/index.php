@@ -12,18 +12,14 @@ if (isset($_GET['query'])) {
         $results[] = $row['itemName'];
     }
 
-    
     echo json_encode($results);
     exit();
 }
-?>
 
-<?php
-include("../includes/db_connection.php");
-
-$categorySql = "SELECT DISTINCT catId, catName FROM categories";
+$categorySql = "SELECT catName, catPicture FROM categories LIMIT 6";
 $categoryResult = $conn->query($categorySql);
 ?>
+
 <!DOCTYPE html>
 <html lang="nl">
 
@@ -143,7 +139,9 @@ $categoryResult = $conn->query($categorySql);
 
         .card img {
             width: 100%;
-            height: auto;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid #ddd;
         }
 
         .card-body {
@@ -167,7 +165,6 @@ $categoryResult = $conn->query($categorySql);
             }
         }
     </style>
-
 
     <script>
         $(document).ready(function () {
@@ -227,11 +224,22 @@ $categoryResult = $conn->query($categorySql);
             <input type="text" id="search" name="search" placeholder="Zoeken...">
             <div id="autocomplete-results"></div>
         </section>
-
-        <section class="categories">
+        <section class="card-container">
             <?php
             while ($row = $categoryResult->fetch_assoc()) {
-                echo '<button class="category-btn" data-category="' . htmlspecialchars($row['catName']) . '">' . htmlspecialchars($row['catName']) . '</button>';
+                echo '<div class="card">';
+                
+             
+                $imageData = base64_encode($row['catPicture']);
+                $imageSrc = "data:image/jpeg;base64,{$imageData}";
+
+                echo '<img src="' . htmlspecialchars($imageSrc) . '" alt="' . htmlspecialchars($row['catName']) . '">';
+                
+                echo '<div class="card-body">';
+                echo '<h3 class="card-title">' . htmlspecialchars($row['catName']) . '</h3>';
+                echo '</div>';
+
+                echo '</div>';
             }
             ?>
         </section>
