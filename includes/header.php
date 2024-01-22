@@ -41,6 +41,7 @@ text-align: center;
         <nav>
             <ul class="nav justify-content-center">
                 <li class="nav-item"><a class="nav-link text-white" href="admindashboard.php">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="uitlenen_pagina.php">uitlenen</a></li>
                 <li class="nav-item"><a class="nav-link text-white" href="add_item.php">Producten toevoegen</a></li>
                 <li class="nav-item"><a class="nav-link text-white" href="gebruikertvg.php">Gebruiker toevoegen</a></li>
                 <li class="nav-item"><a class="nav-link text-white" href="categorieen.php"> categorieen</a></li>
