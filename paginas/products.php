@@ -1,15 +1,19 @@
 <?php
 require '../includes/db_connection.php';
-
 $catId = 1;
+$itemId = 1;
 
 $cat = "SELECT catName FROM categories WHERE $catId";
 $product = "SELECT itemPicture, itemName, itemNumber, itemState, itemId, itemDin, itemDout, itemDescription FROM items WHERE $catId";
+$card_product = "SELECT itemPicture, itemName, itemNumber, itemState, itemId, itemDin, itemDout, itemDescription FROM items WHERE $itemId";
 
 $result_product = $conn->query($product);
 $result_cat = $conn->query($cat);
+$result_card = $conn->query($card_product);
 
 $row_cat = $result_cat->fetch_assoc();
+$result_card_product = $conn->query($card_product);
+$row_card_product = $result_card_product->fetch_assoc();
 ?>
 
 <html>
@@ -40,14 +44,11 @@ $row_cat = $result_cat->fetch_assoc();
                     $status = "niet verkrijgbaar";
                 }
 
-                echo "<div class='product_card fade-in-row' onclick='(" . $row_product["itemId"] . ")'>";
+                echo "<div class='product_card fade-in-row' data-bs-toggle='modal' data-bs-target='#modal1' data-item-id='" . $row_product["itemId"] . "' data-item-name='" . htmlspecialchars($row_product["itemName"], ENT_QUOTES, 'UTF-8') . "' data-item-description='" . htmlspecialchars($row_product["itemDescription"], ENT_QUOTES, 'UTF-8') . "' data-item-number='" . htmlspecialchars($row_product["itemNumber"], ENT_QUOTES, 'UTF-8') . "' data-item-dout='" . $row_product["itemDout"] . "' data-item-din='" . $row_product["itemDin"] . "' data-item-picture='" . htmlspecialchars($row_product["itemPicture"], ENT_QUOTES, 'UTF-8') . "' data-item-state='" . $row_product["itemState"] . "'>";
                 echo "<img src='" . htmlspecialchars($row_product["itemPicture"], ENT_QUOTES, 'UTF-8') . "' alt='Product Photo'>";
                 echo "<p>" . htmlspecialchars($row_product["itemName"], ENT_QUOTES, 'UTF-8') . "</p>";
                 echo "<p>" . htmlspecialchars($row_product["itemNumber"], ENT_QUOTES, 'UTF-8') . "</p>";
                 echo "<p>" . $status . "</p>";
-                echo "<td><button type='button' class='btn btn-primary meer' data-bs-toggle='modal' data-bs-target='#modal1'>Item bewerken</button></td>";
-                echo "<td><button type='button' class='btn btn-dark logs' data-bs-toggle='modal' data-bs-target='#logs'><i class='bi bi-journal-text'></i></button></td>";
-                echo "<td><button type='button' class='btn btn-danger verwijder' data-bs-target='#verwijdermodal' data-bs-toggle='verwijdermodal'><i class='bi bi-trash'></i></button></td>";
                 echo "</div>";
             }
         } else {
@@ -62,7 +63,7 @@ $row_cat = $result_cat->fetch_assoc();
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="modal1Label">
-                            <?php echo $row['itemName'] ?>
+                            <?php echo htmlspecialchars($row_card_product["itemName"]) ?>
 
                         </h1>
                         <button type=button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -70,14 +71,11 @@ $row_cat = $result_cat->fetch_assoc();
 
                     <div class="modal-body">
                         <div class="container">
-
-                            <!-- Modal inhoud -->
-                            <input type="hidden" name="update_id" id="update_id">
                             <div class="row">
                                 <div class="col">
                                     <div class="form-group">
                                         <label>Item:</label>
-                                        <input type="text" name="item" id="item" class="form-control" placeholder="">
+                                        <input type="text" name="item" id="item" class="form-control" placeholder="" value="<?php echo htmlspecialchars($row_card_product["itemName"], ENT_QUOTES, 'UTF-8'); ?>">
                                     </div>
 
                                     <div class="form-group">
@@ -91,7 +89,7 @@ $row_cat = $result_cat->fetch_assoc();
                                             include('includes/db_connection.php');
                                             $categories = mysqli_query($conn, "SELECT * FROM categories");
                                             while ($category = mysqli_fetch_array($categories)) {
-                                                $selected = ($category['catId'] == $row['catId']) ? 'selected' : '';
+                                                $selected = ($category['catId'] == $row_cat['catId']) ? 'selected' : '';
                                             ?>
                                                 <option value="<?php echo $category['catId']; ?>" <?php echo $selected; ?>>
                                                     <?php echo $category['catName']; ?>
@@ -131,13 +129,12 @@ $row_cat = $result_cat->fetch_assoc();
                                 <div class="col">
                                     <div class="form-group">
                                         <label>Foto:</label>
-                                        <img style="height: 500px; width: 550px;" src="data:image/jpeg;base64,<?php echo base64_encode($row['itemPicture']); ?>" alt="<?php echo $row['itemName']; ?>">
+                                        <img style="height: 500px; width: 550px;" src="data:image/jpeg;base64,<?php echo base64_encode($row_card_product['itemPicture']); ?>" alt="<?php echo $row_card_product['itemName']; ?>">
                                         <input type="file" name="foto" id="foto" class="form-control" style="margin-top: 8px;">
                                     </div>
                                 </div>
                             </div>
                             <!-- Hier logs -->
-
                         </div>
                     </div>
                     <div class="modal-footer">

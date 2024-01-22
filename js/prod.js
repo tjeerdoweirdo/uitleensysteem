@@ -1,13 +1,12 @@
-function redirectToProduct(productId) {
-    window.location.href = '/uitleensysteem/paginas/product.php?id=' + productId;
+function redirectToProduct(itemId) {
+    window.location.href = '/uitleensysteem/paginas/product.php?id=' + itemId;
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    var productCards = document.querySelectorAll('.product_card');
-
-    productCards.forEach(function (card, index) {
-        setTimeout(function () {
-            card.classList.add('fade-in-row');
-        }, index * 100);
-    });
-});
+function openEditModal(itemId) {
+    if ($card_product && $card_product[itemId]) {
+        $('#update_id').val(itemId);
+        $('#modal1').modal('show');
+    } else {
+        console.error('Error: Unable to retrieve product information for itemId ' + itemId);
+    }
+}
