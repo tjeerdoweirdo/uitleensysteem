@@ -50,7 +50,8 @@ img {
                         <td>
                             <?php echo $row['itemState']; ?>
                         </td>
-                        <td><button type="button" class="btn btn-primary meer" data-bs-toggle="modal" data-bs-target="#modal1">Meer...</button> </td>
+                        <td><button type="button" class="btn btn-primary meer" data-bs-toggle="modal" data-bs-target="#modal1">Item bewerken</button> </td>
+                        <td><button type="button" class="btn btn-dark logs" data-bs-toggle="modal" data-bs-target="#logs"><i class="bi bi-journal-text"></i>
                         <td><button type="button" class="btn btn-danger verwijder" data-bs-target="#verwijdermodal" data-bs-toggle="verwijdermodal"><i class="bi bi-trash"></i></button></td>
                     </tr>
                     <?php
@@ -126,7 +127,6 @@ img {
                                         <label>Huidige staat:</label><br>
                                         <select class="form-select" id="staat" name="staat">
                                         <option value="Beschikbaar">Beschikbaar</option>
-                                        <option value="Uitgeleend">Uitgeleend</option>
                                         <option value="Reparatie">Reparatie</option>
                                         <option value="Kapot">Kapot</option>
                                         <option value="Anders">Anders (zie omschrijving)</option>
@@ -149,6 +149,7 @@ img {
                             </div>
                         </div>
                         <!-- Hier logs -->
+
                     </div>
 </div>
                     <div class="modal-footer">
@@ -185,7 +186,30 @@ img {
         </form>
         </div>
     </div>
-        
+        <!-- Logs modal -->
+        <div class="modal fade" id="logs" tabindex="-1" aria-labelledby="logsLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h4 class="modal-title fs-5">Logboek</h4>
+                <button type="button" class="btn btn-primary"></i><button type=button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div> 
+                 <input type="hidden">
+                 <div class="modal-body">
+                 <i class="bi bi-plus-square" name="addlog" id="addlog">
+                <?php while ($logRow = mysqli_fetch_assoc($result)) { ?>
+                    <div>
+                        <p><?php echo $logRow['itemLogs']; ?></p>
+                    </div>
+                <?php } ?>
+                <?php mysqli_data_seek($result, 0); ?>
+            </div>
+                <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"> </script>
@@ -203,7 +227,7 @@ $(document).ready(function () {
 
         var $tr = $(this).closest('tr');
         var itemId = $tr.data('itemItemid');
-        console.log('Item ID:', itemId); // Check if the item ID is retrieved correctly
+       
 
         $('#delete_id').val(itemId);
     });
@@ -212,8 +236,6 @@ $(document).ready(function () {
 </script>
 
 <script>
-
-
     $(document).ready(function () {
         $('.meer').on('click', function () {
             $('#modal1').modal('show');
@@ -245,7 +267,7 @@ $(document).ready(function () {
     });
 </script>
 
-<script>
+<!-- <script>
     $(document).ready(function () {
         $('.meer').on('click', function () {
 
@@ -253,11 +275,12 @@ $(document).ready(function () {
             var today = new Date();
 
             // Pakt de inputs van de data
-            var datumUit = new Date($('#datumuit').val());
-            var datumIn = new Date($('#datumin').val());
-
+            var datumUit = new Date(itemDout);
+             var datumIn = new Date(itemDin);
             // Selecteer 'staat' naam/id uit document
             var selectElement = $('#staat');
+
+            console.log('hoi');    
 
             // Controleer of de vandaag tussen de twee data's in zit
             // Als vandaag (today value) groter is dan de datum uitgeleend (datumUit) EN kleiner is dan datum dat het ingelevert moet worden (datumIn)...
@@ -268,13 +291,4 @@ $(document).ready(function () {
             }
         });
     });
-</script>
-
-
-<!-- // echo $row['itemName'];
-// echo $row['itemNumber'];
-// echo $row['itemDout'];
-// echo $row['itemDin'];
-// echo $row['itemDescription'];
-// echo $row['itemState'];
-// echo $row['itemPicture']; -->
+</script> -->
