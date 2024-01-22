@@ -54,11 +54,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['deleteItemId'])) {
     $deleteItemQuery = "DELETE FROM items WHERE itemId = '$deleteItemId'";
 
     if ($conn->query($deleteItemQuery) === TRUE) {
-        echo "Item deleted successfully!";
+        echo "<div id='deleteMessage'>Item deleted successfully!</div>";
+        echo "<script>
+                setTimeout(function() {
+                    document.getElementById('deleteMessage').style.display = 'none';
+                }, 2000); // Hide the message after 2 seconds
+                setTimeout(function() {
+                    window.location.reload();
+                }, 300000); // Reload the page after 5 minutes (300,000 milliseconds)
+              </script>";
     } else {
         echo "Error deleting item: " . $conn->error;
     }
 }
+
 
 ?>
 
