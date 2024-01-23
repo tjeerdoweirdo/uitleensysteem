@@ -1,5 +1,4 @@
 <?php
-
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
@@ -21,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $datum_inleveren = $_POST["itemDin"];
     $datum_terugbrengen = $_POST["itemDout"];
     $item_description = $_POST["itemDescription"];
-    $item_state = $_POST["itemState"];
+    $selected_item_state = $_POST["itemState"];  // Updated variable name
 
     $targetDirectory = "uploads/";  // Change this to the directory where you want to store the uploaded files
     $targetFile = $targetDirectory . basename($_FILES["itemPicture"]["name"]);
@@ -72,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     $insertQuery = "INSERT INTO items (itemName, itemNumber, itemDin, itemDout, itemDescription, itemState, itemPicture) 
-                    VALUES ('$voorwerp_naam', '$item_number', '$datum_inleveren', '$datum_terugbrengen', '$item_description', '$item_state', '$targetFile')";
+                    VALUES ('$voorwerp_naam', '$item_number', '$datum_inleveren', '$datum_terugbrengen', '$item_description', '$selected_item_state', '$targetFile')";
 
     if ($conn->query($insertQuery) === TRUE) {
         $successMessage = "Item successfully added!";
@@ -156,7 +155,10 @@ include '../includes/header.php';
 
             <div class="form-group">
                 <label for="itemState">Item Status:</label>
-                <input type="text" class="form-control" name="itemState">
+                <select class="form-control" name="itemState">
+                    <option value="beschikbaar">Beschikbaar</option>
+                    <option value="uitgeleend">Uitgeleend</option>
+                </select>
             </div>
 
             <div class="form-group">
