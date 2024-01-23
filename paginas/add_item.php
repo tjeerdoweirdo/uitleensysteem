@@ -1,39 +1,87 @@
 <?php
-
 session_start();
 
-if (!isset($_SESSION['user_id']) ) {
+if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit();
 }
 
 require_once('../includes/db_connection.php');
 
-// Controleer de verbinding
+// Check the connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Voeg een nieuw item toe
+// Add a new item
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $voorwerp_naam = $_POST["itemName"];
     $item_number = $_POST["itemNumber"];
     $datum_inleveren = $_POST["itemDin"];
     $datum_terugbrengen = $_POST["itemDout"];
     $item_description = $_POST["itemDescription"];
-    $item_state = $_POST["itemState"];
-    // Assume 'itemPicture' is a file upload, handle it accordingly
+    $selected_item_state = $_POST["itemState"];  // Updated variable name
+
+    $targetDirectory = "uploads/";  // Change this to the directory where you want to store the uploaded files
+    $targetFile = $targetDirectory . basename($_FILES["itemPicture"]["name"]);
+    $uploadOk = 1;
+    $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
+
+    // Check if the file is an actual image or a fake image
+    if (isset($_POST["submit"])) {
+        $check = getimagesize($_FILES["itemPicture"]["tmp_name"]);
+        if ($check !== false) {
+            echo "File is an image - " . $check["mime"] . ".";
+            $uploadOk = 1;
+        } else {
+            echo "File is not an image.";
+            $uploadOk = 0;
+        }
+    }
+
+    // Check if file already exists
+    if (file_exists($targetFile)) {
+        echo "Sorry, file already exists.";
+        $uploadOk = 0;
+    }
+
+    // Check file size
+    if ($_FILES["itemPicture"]["size"] > 500000) {
+        echo "Sorry, your file is too large.";
+        $uploadOk = 0;
+    }
+
+    // Allow certain file formats
+    if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
+        echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+        $uploadOk = 0;
+    }
+
+    // Check if $uploadOk is set to 0 by an error
+    if ($uploadOk == 0) {
+        echo "Sorry, your file was not uploaded.";
+        echo "<script>setTimeout(function() { document.getElementById('errorMessage').style.display='none'; }, 10000);</script>";
+    } else {
+        // if everything is ok, try to upload file
+        if (move_uploaded_file($_FILES["itemPicture"]["tmp_name"], $targetFile)) {
+            echo "The file " . htmlspecialchars(basename($_FILES["itemPicture"]["name"])) . " has been uploaded.";
+        } else {
+            echo "Sorry, there was an error uploading your file.";
+        }
+    }
 
     $insertQuery = "INSERT INTO items (itemName, itemNumber, itemDin, itemDout, itemDescription, itemState, itemPicture) 
-                    VALUES ('$voorwerp_naam', '$item_number', '$datum_inleveren', '$datum_terugbrengen', '$item_description', '$item_state', '')";
-    // If 'itemPicture' is a file upload, handle it accordingly by moving the uploaded file to a specified directory and storing the path in the database.
+                    VALUES ('$voorwerp_naam', '$item_number', '$datum_inleveren', '$datum_terugbrengen', '$item_description', '$selected_item_state', '$targetFile')";
 
     if ($conn->query($insertQuery) === TRUE) {
-        echo "Item succesvol toegevoegd!";
+        $successMessage = "Item successfully added!";
+        echo "<script>setTimeout(function() { document.getElementById('successMessage').style.display='none'; }, 3000);</script>";
     } else {
-        echo "Error: " . $insertQuery . "<br>" . $conn->error;
+        $errorMessage = "Error: " . $insertQuery . "<br>" . $conn->error;
+        echo "<script>setTimeout(function() { document.getElementById('errorMessage').style.display='none'; }, 3000);</script>";
     }
 }
+
 include '../includes/header.php';
 ?>
 
@@ -73,6 +121,12 @@ include '../includes/header.php';
 <body>
     <div class="container">
         <h2 class="animate__animated animate__fadeIn">Item Toevoegen</h2>
+        <div id="successMessage" class="alert alert-success animate__animated animate__fadeIn" style="display:none;">
+            <strong>Success!</strong> <?php echo $successMessage; ?>
+        </div>
+        <div id="errorMessage" class="alert alert-danger animate__animated animate__fadeIn" style="display:none;">
+            <strong>Error!</strong> <?php echo $errorMessage; ?>
+        </div>
         <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" enctype="multipart/form-data" class="animate__animated animate__fadeIn">
             <div class="form-group">
                 <label for="itemName">Item Naam:</label>
@@ -101,14 +155,17 @@ include '../includes/header.php';
 
             <div class="form-group">
                 <label for="itemState">Item Status:</label>
-                <input type="text" class="form-control" name="itemState">
+                <select class="form-control" name="itemState">
+                    <option value="beschikbaar">Beschikbaar</option>
+                    <option value="uitgeleend">Uitgeleend</option>
+                </select>
             </div>
 
             <div class="form-group">
                 <label for="itemPicture">Item Afbeelding:</label>
                 <div class="custom-file">
-                    <input type="file" class="custom-file-input" id="itemPicture" name="itemPicture">
-                    <label class="custom-file-label" for="itemPicture">Kies bestand</label>
+                    <input type="file" class="custom-file-input" id="itemPicture" name="itemPicture" onchange="updateFileNameLabel(this)">
+                    <label class="custom-file-label" id="itemPictureLabel" for="itemPicture">Choose file</label>
                 </div>
             </div>
 
@@ -117,7 +174,7 @@ include '../includes/header.php';
     </div>
 
     <?php
-    // Sluit de databaseverbinding
+    // Close the database connection
     $conn->close();
     ?>
 
@@ -125,5 +182,12 @@ include '../includes/header.php';
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <script>
+        function updateFileNameLabel(input) {
+            var fileName = input.files[0].name;
+            document.getElementById("itemPictureLabel").innerText = fileName;
+        }
+    </script>
 </body>
 </html>

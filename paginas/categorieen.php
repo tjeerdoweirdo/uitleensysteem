@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Category Manager</title>
     <style>
-        h2, h3, form, .category-list {
+              h2, h3, form, .category-list {
             opacity: 0;
             animation: fadeIn 1s ease-in-out forwards;
         }
@@ -81,14 +81,29 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $category = isset($_POST["category"]) ? trim($_POST["category"]) : "";
 
     if (!empty($category)) {
-        $sql = "INSERT INTO categories (catName) VALUES ('$category')";
+        $imagePath = "";
+        if (isset($_FILES['catPicture']) && $_FILES['catPicture']['error'] === 0) {
+            $uploadsDirectory = 'uploads/'; 
+            $uploadFile = $uploadsDirectory . basename($_FILES['catPicture']['name']);
+
+            if (move_uploaded_file($_FILES['catPicture']['tmp_name'], $uploadFile)) {
+                $imagePath = $uploadFile;
+            } else {
+                echo "Error uploading image.";
+                exit();
+            }
+        }
+
+        $sql = "INSERT INTO categories (catName, imagePath) VALUES ('$category', '$imagePath')";
         if ($conn->query($sql) === TRUE) {
             $lastInsertedId = $conn->insert_id;
             $uniqueId = "category_" . $lastInsertedId;
             echo "Category added successfully with ID: $lastInsertedId";
-
-            // Echo the new category with fade-in class
-            echo "<li id='{$uniqueId}'><span>{$category}</span><button type='button' onclick='removeCategory({$lastInsertedId})'>Remove</button></li>";
+            echo "<li id='{$uniqueId}'>";
+            echo "<span>{$category}</span>";
+            echo "<img src='{$imagePath}' alt='Category Image' style='max-width: 100px; max-height: 100px;'>";
+            echo "<button type='button' onclick='removeCategory({$lastInsertedId})'>Remove</button>";
+            echo "</li>";
         } else {
             echo "Error: " . $sql . "<br>" . $conn->error;
         }
@@ -111,16 +126,16 @@ if ($_SERVER["REQUEST_METHOD"] === "GET" && isset($_GET["action"]) && $_GET["act
     exit;
 }
 
-$sql = "SELECT catId, catName FROM categories";
+$sql = "SELECT catId, catName, catPicture FROM categories";
 $result = $conn->query($sql);
 
 $conn->close();
 ?>
 
 <h2>Category Manager</h2>
-
-<form method="post" action="">
+<form method="post" action="" enctype="multipart/form-data">
     <input type="text" name="category" placeholder="Enter a new category" required>
+    <input type="file" name="catPicture" accept="image/*">
     <button type="submit">Add Category</button>
 </form>
 
@@ -132,8 +147,13 @@ $conn->close();
             while ($row = $result->fetch_assoc()) {
                 $categoryId = $row['catId'];
                 $categoryName = $row['catName'];
+                $imagePath = $row['catPicture'];
                 $uniqueId = "category_" . $categoryId;
-                echo "<li id='{$uniqueId}'><span>{$categoryName}</span><button type='button' onclick='removeCategory({$categoryId})'>Remove</button></li>";
+                echo "<li id='{$uniqueId}'>";
+                echo "<span>{$categoryName}</span>";
+                echo "<img src='{$imagePath}' alt='Category Image' style='max-width: 100px; max-height: 100px;'>";
+                echo "<button type='button' onclick='removeCategory({$categoryId})'>Remove</button>";
+                echo "</li>";
             }
         }
         ?>
