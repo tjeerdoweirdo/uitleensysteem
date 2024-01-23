@@ -9,13 +9,15 @@ GROUP BY items.itemId;";
         
 $result = mysqli_query($conn, $sql);
 
-if (isset($_POST['addlog'])){
-        $log_id = $_POST['log_id'];
-        $logEntry = $_POST['addlog'];
-        // $itemId = $_POST[''];
-    
-        $sqladdlog = "INSERT INTO log (logEntry) VALUES ('$logEntry')";
-        $resultaddlog = mysqli_query($conn, $sqladdlog);
+if (isset($_POST['log_id'])) {
+    $itemId = $_POST['log_id'];
+    $logEntry = mysqli_real_escape_string($conn, $_POST['addlog']);
 
-        if($resultaddlog){header("Location:../popuplog.php");}
+    $sqladdlog = "INSERT INTO log (itemId, logEntry) VALUES ('$itemId', '$logEntry')";
+
+    $resultaddlog = mysqli_query($conn, $sqladdlog);
+
+    if ($resultaddlog) {
+        header("Location:../popuplog.php");
     }
+}

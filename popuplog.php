@@ -203,10 +203,10 @@ $result = mysqli_query($conn, $sql);
                     <form method="POST" action="includes/log.inc.php">
                         <div class="form-group">
                         <label>Log toevoegen</label>
-                        <input type="hidden" name="log_id" value="log_id"> 
+                        <input type="hidden" name="log_id" id="log_id"> 
                         <textarea rows="3" name="addlog" id="addlog" class="form-control"></textarea><br>
                         <div class="d-flex flex-row-reverse">
-                            <button class="btn btn-primary addlogbtn" type="submit">Log toevoegen</button>
+                            <button class="btn btn-primary" type="submit">Log toevoegen</button>
                         </div>
                     </div>
                 </form>
@@ -250,9 +250,13 @@ $result = mysqli_query($conn, $sql);
 
             var $tr = $(this).closest('tr');
             var itemId = $tr.data('itemItemid');
+            var logId = $('#log_id').val();
 
             $('#log_id').val(itemId);
             
+            
+            console.log('itemId:', itemId);
+            console.log('logId:', logId);
         });  
 
         });
