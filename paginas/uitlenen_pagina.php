@@ -6,116 +6,148 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+include '../includes/header.php';
 require_once('../includes/db_connection.php');
 
-// Check the connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Update item availability
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["updateAvailability"])) {
-    $itemId = isset($_POST["itemId"]) ? $_POST["itemId"] : '';
-    $newAvailability = isset($_POST["newAvailability"]) ? $_POST["newAvailability"] : '';
+$currentDate = date('Y-m-d');
 
-    // Check if both itemId and newAvailability are not empty
-    if ($itemId !== '' && $newAvailability !== '') {
-        // Update the item availability in the database
-        $updateQuery = "UPDATE items SET itemState = '$newAvailability' WHERE id = $itemId";
+// Handle status change form submission
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['changeStatus'])) {
+    $itemId = htmlspecialchars($_POST['itemId']);
+    $newStatus = htmlspecialchars($_POST['newStatus']);
 
-        if ($conn->query($updateQuery) === TRUE) {
-            $successMessage = "Item availability updated successfully!";
-            echo "<script>setTimeout(function() { document.getElementById('successMessage').style.display='none'; }, 3000);</script>";
+    if ($newStatus == 'TurnedIn') {
+        // Perform turn-in
+        $turnInQuery = "UPDATE items 
+                        SET itemDin = NULL, itemDout = NULL, itemState = 'Returned' 
+                        WHERE itemId = '$itemId'";
+
+        if ($conn->query($turnInQuery) === TRUE) {
+            echo "Item turned in successfully!";
         } else {
-            $errorMessage = "Error updating availability: " . $conn->error;
-            echo "<script>setTimeout(function() { document.getElementById('errorMessage').style.display='none'; }, 3000);</script>";
+            echo "Error turning in item: " . $conn->error;
         }
-        
+    } elseif ($newStatus == 'Borrowed') {
+        // Perform borrowing
+        $borrowedDate = date('Y-m-d');
+        $returnDate = date('Y-m-d', strtotime($borrowedDate . ' + 7 days'));
+
+        $borrowQuery = "UPDATE items 
+                        SET itemDin = '$borrowedDate', itemDout = '$returnDate', itemState = 'Borrowed' 
+                        WHERE itemId = '$itemId'";
+
+        if ($conn->query($borrowQuery) === TRUE) {
+            echo "Item borrowed successfully!";
+        } else {
+            echo "Error borrowing item: " . $conn->error;
+        }
+    } else {
+        // Perform status change
+        $changeStatusQuery = "UPDATE items SET itemState = '$newStatus' WHERE itemId = '$itemId'";
+
+        if ($conn->query($changeStatusQuery) === TRUE) {
+            echo "Status updated successfully!";
+        } else {
+            echo "Error updating status: " . $conn->error;
+        }
     }
 }
 
-// Retrieve items from the database
-$selectQuery = "SELECT * FROM items";
-$result = $conn->query($selectQuery);
-
-include '../includes/header.php';
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Item Overzicht</title>
+    <title>Status and Date Management</title>
+    <style>
+        .section {
+            margin: 20px;
+            text-align: center;
+            overflow-x: auto;
+        }
 
-    <!-- Add Bootstrap CSS -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+        table {
+            margin: auto;
+            border-collapse: collapse;
+            width: 100%;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid black;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
+
 <body>
+    <div class="section">
+        <h2>Status and Date Management</h2>
+        <table border="1">
+            <tr>
+                <th>Item ID</th>
+                <th>Item Naam</th>
+                <th>Item Nummer</th>
+                <th>Datum van Inleveren</th>
+                <th>Datum van Terugbrengen</th>
+                <th>Item Omschrijving</th>
+                <th>Item Status</th>
+                <th>Action</th>
+            </tr>
+            <?php
+            $statusItemsQuery = "SELECT * FROM items";
+            $statusItemsResult = $conn->query($statusItemsQuery);
 
-    <div class="container mt-5">
-        <h2>Item Overzicht</h2>
-
-        <?php
-        if (isset($successMessage)) {
-            echo '<div id="successMessage" class="alert alert-success">' . $successMessage . '</div>';
-        } elseif (isset($errorMessage)) {
-            echo '<div id="errorMessage" class="alert alert-danger">' . $errorMessage . '</div>';
-        }
-
-        if ($result->num_rows > 0) {
-            echo '<table class="table mt-4">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Item Naam</th>
-                            <th>Item Nummer</th>
-                            <th>Datum Inleveren</th>
-                            <th>Datum Terugbrengen</th>
-                            <th>Omschrijving</th>
-                            <th>Status</th>
-                            <th>Afbeelding</th>
-                            <th>Actie</th>
-                        </tr>
-                    </thead>
-                    <tbody>';
-
-            while ($row = $result->fetch_assoc()) {
-                // Check if the "id" key exists in the array
-                $itemId = isset($row["id"]) ? $row["id"] : '';
-
-                echo '<tr>
-                        <td>' . $itemId . '</td>
-                        <td>' . $row["itemName"] . '</td>
-                        <td>' . $row["itemNumber"] . '</td>
-                        <td>' . $row["itemDin"] . '</td>
-                        <td>' . $row["itemDout"] . '</td>
-                        <td>' . $row["itemDescription"] . '</td>
-                        <td>' . $row["itemState"] . '</td>
-                        <td><img src="' . $row["itemPicture"] . '" alt="Item Image" style="max-width: 100px;"></td>
-                        <td>
-                            <form method="POST">
-                                <input type="hidden" name="itemId" value="' . $itemId . '">
-                                <select name="newAvailability" class="form-control">
-                                    <option value="Beschikbaar">Beschikbaar</option>
-                                    <option value="Uitgeleend">Uitgeleend</option>
-                                </select>
-                                <button type="submit" name="updateAvailability" class="btn btn-primary btn-sm mt-2">Update</button>
-                            </form>
-                        </td>
-                    </tr>';
+            if ($statusItemsResult->num_rows > 0) {
+                while ($row = $statusItemsResult->fetch_assoc()) {
+                    echo "<tr>
+                            <td>{$row['itemId']}</td>
+                            <td>{$row['itemName']}</td>
+                            <td>{$row['itemNumber']}</td>
+                            <td>{$row['itemDin']}</td>
+                            <td>{$row['itemDout']}</td>
+                            <td>{$row['itemDescription']}</td>
+                            <td>{$row['itemState']}</td>
+                            <td>
+                                <form method='post' action='{$_SERVER["PHP_SELF"]}'>
+                                    <input type='hidden' name='itemId' value='{$row['itemId']}'>
+                                    <input type='hidden' name='newStatus' value='Borrowed'>
+                                    <button type='submit' name='changeStatus'>Borrowed</button>
+                                </form>
+                                <form method='post' action='{$_SERVER["PHP_SELF"]}'>
+                                    <input type='hidden' name='itemId' value='{$row['itemId']}'>
+                                    <input type='hidden' name='newStatus' value='TurnedIn'>
+                                    <button type='submit' name='changeStatus'>Turn In</button>
+                                </form>
+                                <form method='post' action='{$_SERVER["PHP_SELF"]}'>
+                                    <input type='hidden' name='editItemId' value='{$row['itemId']}'>
+                                    <button type='submit'>Edit</button>
+                                </form>
+                            </td>
+                        </tr>";
+                }
+            } else {
+                echo "<tr><td colspan='8'>No items found</td></tr>";
             }
-
-            echo '</tbody></table>';
-        } else {
-            echo '<p>Geen items beschikbaar.</p>';
-        }
-
-        $conn->close();
-        ?>
+            ?>
+        </table>
     </div>
 
-    <!-- Add your other HTML content or scripts here -->
-
+    <?php
+    $conn->close();
+    ?>
 </body>
+
 </html>
