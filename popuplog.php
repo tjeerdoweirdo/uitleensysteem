@@ -10,17 +10,18 @@ $result = mysqli_query($conn, $sql);
 <!DOCTYPE html>
 <html lang="en">
 <style>
-img {
-    height: 100px;
-    width: 100px;
-}
-
+    img {
+        height: 100px;
+        width: 100px;
+    }
 </style>
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous"></link>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    </link>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <title>Document</title>
 </head>
@@ -41,18 +42,20 @@ img {
                         data-item-din="<?php echo $row['itemDin']; ?>"
                         data-item-picture="<?php echo base64_encode($row['itemPicture']); ?>"
                         data-item-state="<?php echo $row['itemState']; ?>">
-                        
-                        <td><img src="data:image/jpeg;base64,<?php echo base64_encode($row['itemPicture']); ?>"
-                                alt="<?php echo $row['itemName']; ?>"></td>
+
+                        <td><img src="data:image/jpeg;base64,<?php echo base64_encode($row['itemPicture']); ?>" alt="<?php echo $row['itemName']; ?>"></td>
                         <td>
                             <?php echo $row['itemName']; ?>
                         </td>
                         <td>
                             <?php echo $row['itemState']; ?>
                         </td>
-                        <td><button type="button" class="btn btn-primary meer" data-bs-toggle="modal" data-bs-target="#modal1">Item bewerken</button> </td>
-                        <td><button type="button" class="btn btn-dark logs" data-bs-toggle="modal" data-bs-target="#logs"><i class="bi bi-journal-text"></i>
-                        <td><button type="button" class="btn btn-danger verwijder" data-bs-target="#verwijdermodal" data-bs-toggle="verwijdermodal"><i class="bi bi-trash"></i></button></td>
+                        <td><button type="button" class="btn btn-primary meer" data-bs-toggle="modal"
+                                data-bs-target="#modal1">Item bewerken</button> </td>
+                        <td><button type="button" class="btn btn-dark logs" data-bs-toggle="modal" data-bs-target="#logs"><i
+                                    class="bi bi-journal-text"></i></td>
+                        <td><button type="button" class="btn btn-danger verwijder" data-bs-target="#verwijdermodal"
+                                data-bs-toggle="verwijdermodal"><i class="bi bi-trash"></i></button></td>
                     </tr>
                     <?php
                 }
@@ -94,20 +97,20 @@ img {
                                             placeholder="">
                                     </div>
                                     <div class="form-group">
-                                    <label>Categorie:</label>
-                                    <select class="form-select" id="categorie" name="categorie">
-                                        <?php
-                                        include('includes/db_connection.php');
-                                        $categories = mysqli_query($conn, "SELECT * FROM categories");
-                                        while ($category = mysqli_fetch_array($categories)) {
-                                            $selected = ($category['catId'] == $row['catId']) ? 'selected' : '';
-                                            ?>
-                                            <option value="<?php echo $category['catId']; ?>" <?php echo $selected; ?>>
-                                                <?php echo $category['catName']; ?>
-                                            </option>
-                                        <?php } ?>
-                                    </select>
-                                </div>
+                                        <label>Categorie:</label>
+                                        <select class="form-select" id="categorie" name="categorie">
+                                            <?php
+                                            include('includes/db_connection.php');
+                                            $categories = mysqli_query($conn, "SELECT * FROM categories");
+                                            while ($category = mysqli_fetch_array($categories)) {
+                                                $selected = ($category['catId'] == $row['catId']) ? 'selected' : '';
+                                                ?>
+                                                <option value="<?php echo $category['catId']; ?>" <?php echo $selected; ?>>
+                                                    <?php echo $category['catName']; ?>
+                                                </option>
+                                            <?php } ?>
+                                        </select>
+                                    </div>
 
                                     <div class="d-flex mb-3" style="margin-bottom: 0px!important;">
                                         <div class="form-group p-2" style="padding-left: 0px!important;">
@@ -126,32 +129,31 @@ img {
                                     <div class="form-group">
                                         <label>Huidige staat:</label><br>
                                         <select class="form-select" id="staat" name="staat">
-                                        <option value="Beschikbaar">Beschikbaar</option>
-                                        <option value="Reparatie">Reparatie</option>
-                                        <option value="Kapot">Kapot</option>
-                                        <option value="Anders">Anders (zie omschrijving)</option>
+                                            <option value="Beschikbaar">Beschikbaar</option>
+                                            <option value="Reparatie">Reparatie</option>
+                                            <option value="Kapot">Kapot</option>
+                                            <option value="Anders">Anders (zie omschrijving)</option>
                                         </select>
                                     </div>
 
                                     <div class="form-group">
                                         <label>Omschrijving:</label>
-                                        <textarea rows="7" name="omschrijving" id="omschrijving" class="form-control"></textarea>
+                                        <textarea rows="7" name="omschrijving" id="omschrijving"
+                                            class="form-control"></textarea>
                                     </div>
                                 </div>
-                            
-                            <div class="col">
-                                <div class="form-group">
-                                    <label>Foto:</label>
-                                    <img style="height: 500px; width: 550px;" src="data:image/jpeg;base64,<?php echo base64_encode($row['itemPicture']); ?>"
-                                        alt="<?php echo $row['itemName']; ?>">
-                                    <input type="file" name="foto" id="foto" class="form-control" style="margin-top: 8px;">
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Hier logs -->
 
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label>Foto:</label>
+                                        <img style="height: 500px; width: 550px;" src="data:image/jpeg;base64,<?php echo base64_encode($row['itemPicture']); ?>" alt="<?php echo $row['itemName']; ?>">
+                                        <input type="file" name="foto" id="foto" class="form-control"
+                                            style="margin-top: 8px;">
+                                    </div>
+                                </div>
+                                            </div>
+                        </div>
                     </div>
-</div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
                         <button type="submit" name="savedata" class="btn btn-primary">Opslaan</button>
@@ -163,7 +165,7 @@ img {
     </form>
 
 
-                                        <!-- Verwijder Modal -->
+    <!-- Verwijder Modal -->
 
     <div class="modal fade" id="verwijdermodal" tabindex="-1" aria-labelledby="verwijdermodalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -171,72 +173,97 @@ img {
                 <div class="modal-header">
                     <h4 class="modal-title fs-5">Item verwijderen</h4>
                     <button type=button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div> 
+                </div>
                 <form method="POST" action="includes/deleteitem.php">
-                 <input type="hidden" name="delete_id" id="delete_id">
-                <div class="modal-body">
-                
-                <p>Weet u zeker dat u dit item wilt verwijderen?</p>
-                </div>
-                <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
-                      <button type="submit" name="deleteitem" class="btn btn-danger verwijderen">Verwijderen</button>
-                </div>
+                    <input type="hidden" name="delete_id" id="delete_id">
+                    <div class="modal-body">
+
+                        <p>Weet u zeker dat u dit item wilt verwijderen?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuleren</button>
+                        <button type="submit" name="deleteitem" class="btn btn-danger verwijderen">Verwijderen</button>
+                    </div>
             </div>
-        </form>
+            </form>
         </div>
     </div>
-        <!-- Logs modal -->
-        <div class="modal fade" id="logs" tabindex="-1" aria-labelledby="logsLabel" aria-hidden="true">
+
+    <!-- Logs modal -->
+    <div class="modal fade" id="logmodal" tabindex="-1" aria-labelledby="logsLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                <h4 class="modal-title fs-5">Logboek</h4>
-                <button type="button" class="btn btn-primary"></i><button type=button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div> 
-                 <input type="hidden">
-                 <div class="modal-body">
-                 <i class="bi bi-plus-square" name="addlog" id="addlog">
+                    <h4 class="modal-title fs-5">Logboek</h4>
+                    <button type=button class="btn-close"
+                            data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <input type="hidden">
+                <div class="modal-body">
+                    <form method="POST" action="includes/log.inc.php">
+                        <div class="form-group">
+                        <label>Log toevoegen</label>
+                        <input type="hidden" name="log_id" id="log_id"> 
+                        <textarea rows="3" name="addlog" id="addlog" class="form-control"></textarea><br>
+                        <div class="d-flex flex-row-reverse">
+                            <button class="btn btn-primary" type="submit">Log toevoegen</button>
+                        </div>
+                    </div>
+                </form>
+                </div>
                 <?php while ($logRow = mysqli_fetch_assoc($result)) { ?>
                     <div>
-                        <p><?php echo $logRow['itemLogs']; ?></p>
+                        <p>
+                            <?php echo $logRow['itemLogs']; ?>
+                        </p>
                     </div>
                 <?php } ?>
                 <?php mysqli_data_seek($result, 0); ?>
-            </div>
-                <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
-                </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
             </div>
         </div>
+    </div>
     </div>
 </body>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"> </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/@popperjs/core@2"></script>
 
 <script>
-$(document).ready(function () {
-    $('.verwijder').on('click', function () {
-        $('#verwijdermodal').modal('show');
+    $(document).ready(function () {
+        $('.verwijder').on('click', function () {
+            $('#verwijdermodal').modal('show');
 
-        console.log('Delete ID:', $('#delete_id').val());
+            var $tr = $(this).closest('tr');
+            var itemId = $tr.data('itemItemid');
 
-        var $tr = $(this).closest('tr');
-        var itemId = $tr.data('itemItemid');
-       
 
-        $('#delete_id').val(itemId);
-    });
-});
+            $('#delete_id').val(itemId);
+        });
+    
 
+        $('.logs').on('click', function () {
+            $('#logmodal').modal('show');
+
+            var $tr = $(this).closest('tr');
+            var itemId = $tr.data('itemItemid');
+            var logId = $('#log_id').val();
+
+            $('#log_id').val(itemId);
+            
+            
+            console.log('itemId:', itemId);
+            console.log('logId:', logId);
+        });  
+
+        });
 </script>
 
 <script>
-    $(document).ready(function () {
+$(document).ready(function () {
         $('.meer').on('click', function () {
             $('#modal1').modal('show');
 
@@ -264,31 +291,5 @@ $(document).ready(function () {
 
 
         });
-    });
+    });    
 </script>
-
-<!-- <script>
-    $(document).ready(function () {
-        $('.meer').on('click', function () {
-
-            // Pakt de datum van vandaag
-            var today = new Date();
-
-            // Pakt de inputs van de data
-            var datumUit = new Date(itemDout);
-             var datumIn = new Date(itemDin);
-            // Selecteer 'staat' naam/id uit document
-            var selectElement = $('#staat');
-
-            console.log('hoi');    
-
-            // Controleer of de vandaag tussen de twee data's in zit
-            // Als vandaag (today value) groter is dan de datum uitgeleend (datumUit) EN kleiner is dan datum dat het ingelevert moet worden (datumIn)...
-            if (today >= datumUit && today <= datumIn) {
-                selectElement.val('Uitgeleend');
-            } else {
-                selectElement.val(''); // Set it to empty if not between the dates
-            }
-        });
-    });
-</script> -->
