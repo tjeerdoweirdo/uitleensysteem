@@ -28,6 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['editItemId'])) {
                 <input type='hidden' name='itemId' value='{$editItemRow['itemId']}'>
                 Item Name: <input type='text' name='editItemName' value='{$editItemRow['itemName']}'><br>
                 Item Number: <input type='text' name='editItemNumber' value='{$editItemRow['itemNumber']}'><br>
+                Item Description: <textarea name='editItemDescription'>{$editItemRow['itemDescription']}</textarea><br>
                 <input type='submit' name='updateItem' value='Update'>
             </form>";
     }
@@ -38,9 +39,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['updateItem'])) {
     $itemId = htmlspecialchars($_POST['itemId']);
     $editItemName = htmlspecialchars($_POST['editItemName']);
     $editItemNumber = htmlspecialchars($_POST['editItemNumber']);
+    $editItemDescription = htmlspecialchars($_POST['editItemDescription']);
 
     $updateItemQuery = "UPDATE items 
-                        SET itemName = '$editItemName', itemNumber = '$editItemNumber' 
+                        SET itemName = '$editItemName', itemNumber = '$editItemNumber', itemDescription = '$editItemDescription'
                         WHERE itemId = '$itemId'";
 
     if ($conn->query($updateItemQuery) === TRUE) {
