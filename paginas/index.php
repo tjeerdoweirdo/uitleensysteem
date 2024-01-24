@@ -116,15 +116,15 @@ $categoryResult = $conn->query($categorySql);
         }
         .card-container {
             display: flex;
-            justify-content: space-around; /* Center the cards horizontally */
-            align-items: flex-start; /* Align the cards to the top of the container */
-            flex-wrap: wrap; /* Allow cards to wrap to the next line */
-            margin: 0 -10px; /* Add negative margin to counteract spacing between cards */
+            justify-content: space-around; 
+            align-items: flex-start; 
+            flex-wrap: wrap; 
+            margin: 0 -10px; 
         }
 
         .card {
-            flex: 0 0 calc(30% - 20px); /* Adjust the card width */
-            height: 200px; /* Set a fixed height for the cards */
+            flex: 0 0 calc(30% - 20px); 
+            height: 200px; 
             margin: 10px;
             box-sizing: border-box;
             background-color: #fff;
@@ -141,7 +141,7 @@ $categoryResult = $conn->query($categorySql);
         .card img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Make the image fit within the fixed height of the card while maintaining aspect ratio */
+            object-fit: contain; 
         }
 
         .card-body {
