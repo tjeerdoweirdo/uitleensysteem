@@ -1,7 +1,8 @@
 <?php
 require '../includes/db_connection.php';
 $catId = 1;
-$itemId = isset($_GET['id']) ? $_GET['id'] : 1;
+$itemId = 1;
+
 $cat = "SELECT catName FROM categories WHERE $catId";
 $product = "SELECT itemPicture, itemName, itemNumber, itemState, itemId, itemDin, itemDout, itemDescription FROM items WHERE $catId";
 $card_product = "SELECT itemPicture, itemName, itemNumber, itemState, itemId, itemDin, itemDout, itemDescription FROM items WHERE $itemId";
@@ -189,7 +190,6 @@ $userRole = 0;
             </div>
         </div>
     </div>
-
 
     <div class="modal fade" id="modal2" tabindex="-1" aria-labelledby="modal1Label" aria-hidden="true">
         <form id="save" method="POST" enctype="multipart/form-data">
