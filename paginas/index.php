@@ -161,16 +161,10 @@ $categoryResult = $conn->query($categorySql);
                     $('#autocomplete-results').hide();
                 }
             });
-
-            $(document).on('click', function(e) {
-                if (!$(e.target).closest('#autocomplete-results').length) {
-                    $('#autocomplete-results').hide();
-                }
-            });
             $(document).on('click', '.view-details-btn', function(e) {
                 e.preventDefault();
 
-                var categoryId = $(this).data('catId');
+                var categoryId = $(this).data('categoryid');
 
                 window.location.href = 'products.php?id=' + categoryId;
             });
@@ -207,7 +201,7 @@ $categoryResult = $conn->query($categorySql);
                 echo '<div class="card-footer">';
                 echo '<a class="btn btn-primary view-details-btn" data-categoryid="' . htmlspecialchars($row['catId']) . '">View Details</a>';
                 echo '</div>';
-
+                
                 echo '</div>';
             }
             ?>
