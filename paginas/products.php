@@ -1,10 +1,10 @@
 <?php
 require '../includes/db_connection.php';
-$catId = 1;
+$catId = isset($_GET['catId']) ? $_GET['catId'] : '';
 $itemId = 1;
 
-$cat = "SELECT catName FROM categories WHERE $catId";
-$product = "SELECT itemPicture, itemName, itemNumber, itemState, itemId, itemDin, itemDout, itemDescription FROM items WHERE $catId";
+$cat = "SELECT catName FROM categories WHERE catId = '$catId'";
+$product = "SELECT itemPicture, itemName, itemNumber, itemState, itemId, itemDin, itemDout, itemDescription FROM items WHERE catId = '$catId'";
 $card_product = "SELECT itemPicture, itemName, itemNumber, itemState, itemId, itemDin, itemDout, itemDescription FROM items WHERE $itemId";
 
 $result_product = $conn->query($product);

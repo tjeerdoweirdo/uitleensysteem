@@ -165,7 +165,7 @@ $categoryResult = $conn->query($categorySql);
 
                 var categoryId = $(this).data('categoryid');
 
-                window.location.href = 'products.php?id=' + categoryId;
+                window.location.href = 'products.php?catId=' + categoryId;
             });
         });
     </script>
