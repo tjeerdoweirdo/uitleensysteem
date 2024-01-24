@@ -32,9 +32,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['updateItem'])) {
     $editItemName = htmlspecialchars($_POST['editItemName']);
     $editItemNumber = htmlspecialchars($_POST['editItemNumber']);
     $editItemDescription = htmlspecialchars($_POST['editItemDescription']);
+    $editItemReturnDate = htmlspecialchars($_POST['editItemReturnDate']);
 
     $updateItemQuery = "UPDATE items 
-                        SET itemName = '$editItemName', itemNumber = '$editItemNumber', itemDescription = '$editItemDescription'
+                        SET itemName = '$editItemName', itemNumber = '$editItemNumber', 
+                        itemDescription = '$editItemDescription', itemDout = '$editItemReturnDate'
                         WHERE itemId = '$itemId'";
 
     if ($conn->query($updateItemQuery) === TRUE) {
@@ -195,6 +197,7 @@ $currentItemsResult = $conn->query($currentItemsQuery);
             Item Naam: <input type='text' name='editItemName' value='<?php echo $editItemRow['itemName']; ?>'><br>
             Item Nummer: <input type='text' name='editItemNumber' value='<?php echo $editItemRow['itemNumber']; ?>'><br>
             Item Omschrijving: <textarea name='editItemDescription'><?php echo $editItemRow['itemDescription']; ?></textarea><br>
+            Datum van Terugbrengen: <input type='date' name='editItemReturnDate' value='<?php echo $editItemRow['itemDout']; ?>'><br>
             <input type='submit' name='updateItem' value='Bijwerken'>
         </form>
     </div>
@@ -217,15 +220,6 @@ $currentItemsResult = $conn->query($currentItemsQuery);
     <div class="section">
         <h2>Teruggebrachte Items</h2>
         <table border="1">
-            <tr>
-                <th>Item Naam</th>
-                <th>Item Nummer</th>
-                <th>Datum van Inleveren</th>
-                <th>Datum van Terugbrengen</th>
-                <th>Item Omschrijving</th>
-                <th>Item Status</th>
-                <th>Actie</th>
-            </tr>
             <?php
             // Query for returned items
             $returnedItemsQuery = "SELECT * FROM items WHERE itemState = 'Returned'";
