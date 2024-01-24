@@ -114,17 +114,18 @@ $categoryResult = $conn->query($categorySql);
         .categories button:hover {
             background-color: #0056b3;
         }
-
         .card-container {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+            justify-content: space-around; 
+            align-items: flex-start; 
+            flex-wrap: wrap; 
+            margin: 0 -10px; 
         }
 
         .card {
-            flex: 0 0 calc(33.33% - 20px);
+            flex: 0 0 calc(30% - 20px); 
+            height: 200px; 
             margin: 10px;
-            max-width: 300px;
             box-sizing: border-box;
             background-color: #fff;
             border: 1px solid #ddd;
@@ -139,9 +140,8 @@ $categoryResult = $conn->query($categorySql);
 
         .card img {
             width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-bottom: 1px solid #ddd;
+            height: 100%;
+            object-fit: contain; 
         }
 
         .card-body {
@@ -164,9 +164,11 @@ $categoryResult = $conn->query($categorySql);
                 flex: 0 0 calc(50% - 20px);
             }
         }
+       
+      
     </style>
-
-    <script>
+    </style>
+  <script>
         $(document).ready(function () {
             $('#search').keyup(function () {
                 var query = $(this).val();
@@ -208,6 +210,7 @@ $categoryResult = $conn->query($categorySql);
         });
     </script>
 </head>
+   
 
 <body>
     <header>
@@ -229,11 +232,9 @@ $categoryResult = $conn->query($categorySql);
             while ($row = $categoryResult->fetch_assoc()) {
                 echo '<div class="card">';
                 
-             
-                $imageData = base64_encode($row['catPicture']);
-                $imageSrc = "data:image/jpeg;base64,{$imageData}";
-
-                echo '<img src="' . htmlspecialchars($imageSrc) . '" alt="' . htmlspecialchars($row['catName']) . '">';
+                // Displaying category image
+                $imagePath = $row['catPicture'];
+                echo '<img src="' . htmlspecialchars($imagePath) . '" alt="' . htmlspecialchars($row['catName']) . '">';
                 
                 echo '<div class="card-body">';
                 echo '<h3 class="card-title">' . htmlspecialchars($row['catName']) . '</h3>';
