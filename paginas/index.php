@@ -1,5 +1,6 @@
 <?php
 include("../includes/db_connection.php");
+
 if (isset($_GET['query'])) {
     $searchTerm = $_GET['query'];
 
@@ -30,150 +31,151 @@ $categoryResult = $conn->query($categorySql);
     <link rel="stylesheet" href="../css/styles.css">
     <title>elektronica lenen App</title>
 
-<style>
-    body {
-        font-family: 'Arial', sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #f8f9fa;
-    }
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
 
-    header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 10px;
-        background-color: #333;
-        color: #fff;
-    }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #333;
+            color: #fff;
+        }
 
-    .login-btn {
-        text-decoration: none;
-        color: #fff;
-        padding: 8px 16px;
-        border-radius: 4px;
-        background-color: #007bff;
-        transition: background-color 0.3s ease;
-    }
+        .login-btn {
+            text-decoration: none;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 4px;
+            background-color: #007bff;
+            transition: background-color 0.3s ease;
+        }
 
-    .login-btn:hover {
-        background-color: #0056b3;
-    }
+        .login-btn:hover {
+            background-color: #0056b3;
+        }
 
-    main {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 20px;
-    }
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
 
-    .search-bar {
-        margin-bottom: 20px;
-        position: relative;
-    }
+        .search-bar {
+            margin-bottom: 20px;
+            position: relative;
+        }
 
-    #autocomplete-results {
-        position: absolute;
-        width: 100%;
-        max-height: 150px;
-        overflow-y: auto;
-        background-color: #fff;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        display: none;
-    }
+        #autocomplete-results {
+            position: absolute;
+            width: 100%;
+            max-height: 150px;
+            overflow-y: auto;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
 
-    #autocomplete-results div {
-        padding: 8px;
-        cursor: pointer;
-    }
+        #autocomplete-results div {
+            padding: 8px;
+            cursor: pointer;
+        }
 
-    #autocomplete-results div:hover {
-        background-color: #f0f0f0;
-    }
+        #autocomplete-results div:hover {
+            background-color: #f0f0f0;
+        }
 
-    .card-container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
 
-    .card {
-        margin: 15px;
-        width: 250px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: box-shadow 0.3s ease;
-    }
+        .card {
+            margin: 15px;
+            width: 250px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+        }
 
-    .card:hover {
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    }
+        .card:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
 
-    .card-img-top {
-        max-height: 100%;
-        object-fit: fill;
-    }
+        .card-img-top {
+            max-height: 100%;
+            object-fit: fill;
+        }
 
-    .card-body {
-        padding: 15px;
-    }
+        .card-body {
+            padding: 15px;
+        }
 
-    .card-footer {
-        text-align: center;
-        padding: 15px;
-    }
-</style>
+        .card-footer {
+            text-align: center;
+            padding: 15px;
+        }
+    </style>
 
-<script>
-    $(document).ready(function() {
-        $('#search').keyup(function() {
-            var query = $(this).val();
+    <script>
+        $(document).ready(function() {
+            $('#search').keyup(function() {
+                var query = $(this).val();
 
-            if (query.length >= 2) {
-                $.ajax({
-                    url: 'index.php',
-                    method: 'GET',
-                    data: {
-                        query: query
-                    },
-                    success: function(data) {
-                        try {
-                            var results = JSON.parse(data);
-                            var autocompleteResults = $('#autocomplete-results');
-                            autocompleteResults.empty();
+                if (query.length >= 2) {
+                    $.ajax({
+                        url: 'index.php',
+                        method: 'GET',
+                        data: {
+                            query: query
+                        },
+                        success: function(data) {
+                            try {
+                                var results = JSON.parse(data);
+                                var autocompleteResults = $('#autocomplete-results');
+                                autocompleteResults.empty();
 
-                            results.forEach(function(result) {
-                                autocompleteResults.append('<div>' + result + '</div>');
-                            });
+                                results.forEach(function(result) {
+                                    autocompleteResults.append('<div>' + result + '</div>');
+                                });
 
-                            autocompleteResults.show();
-                        } catch (error) {
-                            console.error('Error parsing JSON:', error);
+                                autocompleteResults.show();
+                            } catch (error) {
+                                console.error('Error parsing JSON:', error);
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Ajax request error:', error);
                         }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('Ajax request error:', error);
-                    }
-                });
-            } else {
-                $('#autocomplete-results').hide();
-            }
-        });
-        $(document).on('click', function(e) {
-            if (!$(e.target).closest('#autocomplete-results').length) {
-                $('#autocomplete-results').hide();
-            }
-        });
-        $(document).on('click', '.view-details-btn', function(e) {
-            e.preventDefault();
+                    });
+                } else {
+                    $('#autocomplete-results').hide();
+                }
+            });
 
-            var categoryId = $(this).data('categoryid');
+            $(document).on('click', function(e) {
+                if (!$(e.target).closest('#autocomplete-results').length) {
+                    $('#autocomplete-results').hide();
+                }
+            });
+            $(document).on('click', '.view-details-btn', function(e) {
+                e.preventDefault();
 
-            window.location.href = 'products.php?id=' + categoryId;
+                var categoryId = $(this).data('catId');
+
+                window.location.href = 'products.php?id=' + categoryId;
+            });
         });
-    });
-</script>
+    </script>
 </head>
 
 <body>
@@ -204,6 +206,8 @@ $categoryResult = $conn->query($categorySql);
 
                 echo '<div class="card-footer">';
                 echo '<a class="btn btn-primary view-details-btn" data-categoryid="' . htmlspecialchars($row['catId']) . '">View Details</a>';
+                echo '</div>';
+
                 echo '</div>';
             }
             ?>
