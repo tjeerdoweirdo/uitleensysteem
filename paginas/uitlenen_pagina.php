@@ -97,7 +97,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['changeStatus'])) {
         <h2>Status and Date Management</h2>
         <table border="1">
             <tr>
-                <th>Item ID</th>
                 <th>Item Naam</th>
                 <th>Item Nummer</th>
                 <th>Datum van Inleveren</th>
@@ -113,7 +112,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['changeStatus'])) {
             if ($statusItemsResult->num_rows > 0) {
                 while ($row = $statusItemsResult->fetch_assoc()) {
                     echo "<tr>
-                            <td>{$row['itemId']}</td>
                             <td>{$row['itemName']}</td>
                             <td>{$row['itemNumber']}</td>
                             <td>{$row['itemDin']}</td>

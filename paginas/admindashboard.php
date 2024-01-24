@@ -114,150 +114,34 @@ $currentItemsResult = $conn->query($currentItemsQuery);
 </head>
 
 <body>
-    <div class="section">
-        <h2>Telaat ingeleverde items</h2>
-        <table border="1">
-            <tr>
-                <th>Item Naam</th>
-                <th>Item Nummer</th>
-                <th>Datum van Inleveren</th>
-                <th>Datum van Terugbrengen</th>
-                <th>Item Omschrijving</th>
-                <th>Item Status</th>
-                <th>Action</th>
-            </tr>
-            <?php
-            if ($delayedItemsResult->num_rows > 0) {
-                while ($row = $delayedItemsResult->fetch_assoc()) {
-                    echo "<tr>
-                            <td>{$row['itemName']}</td>
-                            <td>{$row['itemNumber']}</td>
-                            <td>{$row['itemDin']}</td>
-                            <td>{$row['itemDout']}</td>
-                            <td>{$row['itemDescription']}</td>
-                            <td>{$row['itemState']}</td>
-                            <td>
-                                <form method='post' action='{$_SERVER["PHP_SELF"]}'>
-                                    <input type='hidden' name='deleteItemId' value='{$row['itemId']}'>
-                                    <input type='submit' value='Delete'>
-                                </form>
-                                <form method='post' action='{$_SERVER["PHP_SELF"]}'>
-                                    <input type='hidden' name='editItemId' value='{$row['itemId']}'>
-                                    <input type='submit' value='Edit'>
-                                </form>
-                            </td>
-                        </tr>";
-                }
-            } else {
-                echo "<tr><td colspan='8'>No delayed items found</td></tr>";
-            }
-            ?>
-        </table>
-    </div>
+<!-- ... (existing code) ... -->
 
-    <div class="section">
-        <h2>Items die vandaag moeten worden ingeleverd</h2>
-        <table border="1">
-            <tr>
-                <th>Item Naam</th>
-                <th>Item Nummer</th>
-                <th>Datum van Inleveren</th>
-                <th>Datum van Terugbrengen</th>
-                <th>Item Omschrijving</th>
-                <th>Item Status</th>
-                <th>Action</th>
-            </tr>
-            <?php
-            if ($todayItemsResult->num_rows > 0) {
-                while ($row = $todayItemsResult->fetch_assoc()) {
-                    echo "<tr>
-                            <td>{$row['itemName']}</td>
-                            <td>{$row['itemNumber']}</td>
-                            <td>{$row['itemDin']}</td>
-                            <td>{$row['itemDout']}</td>
-                            <td>{$row['itemDescription']}</td>
-                            <td>{$row['itemState']}</td>
-                            <td>
-                                <form method='post' action='{$_SERVER["PHP_SELF"]}'>
-                                    <input type='hidden' name='deleteItemId' value='{$row['itemId']}'>
-                                    <input type='submit' value='Delete'>
-                                </form>
-                                <form method='post' action='{$_SERVER["PHP_SELF"]}'>
-                                    <input type='hidden' name='editItemId' value='{$row['itemId']}'>
-                                    <input type='submit' value='Edit'>
-                                </form>
-                            </td>
-                        </tr>";
-                }
-            } else {
-                echo "<tr><td colspan='8'>No items due today</td></tr>";
-            }
-            ?>
-        </table>
-    </div>
-
-    <div class="section">
-        <h2>Momenteel Uitgeleende Items</h2>
-        <table border="1">
-            <tr>
-                <th>Item Naam</th>
-                <th>Item Nummer</th>
-                <th>Datum van Inleveren</th>
-                <th>Datum van Terugbrengen</th>
-                <th>Item Omschrijving</th>
-                <th>Item Status</th>
-                <th>Action</th>
-            </tr>
-            <?php
-            if ($currentItemsResult->num_rows > 0) {
-                while ($row = $currentItemsResult->fetch_assoc()) {
-                    echo "<tr>
-                            <td>{$row['itemName']}</td>
-                            <td>{$row['itemNumber']}</td>
-                            <td>" . ($row['itemDin'] ? $row['itemDin'] : 'N/A') . "</td>
-                            <td>" . ($row['itemDout'] ? $row['itemDout'] : 'N/A') . "</td>
-                            <td>{$row['itemDescription']}</td>
-                            <td>{$row['itemState']}</td>
-                            <td>
-                                <form method='post' action='{$_SERVER["PHP_SELF"]}'>
-                                    <input type='hidden' name='deleteItemId' value='{$row['itemId']}'>
-                                    <input type='submit' value='Delete'>
-                                </form>
-                                <form method='post' action='{$_SERVER["PHP_SELF"]}'>
-                                    <input type='hidden' name='editItemId' value='{$row['itemId']}'>
-                                    <input type='submit' value='Edit'>
-                                </form>
-                            </td>
-                        </tr>";
-                }
-            } else {
-                echo "<tr><td colspan='8'>No currently borrowed items</td></tr>";
-            }
-            ?>
-        </table>
-    </div>
-    <div class="section">
-    <h2>Items Currently in Storage</h2>
+<div class="section">
+    <h2>Borrowed Items</h2>
     <table border="1">
         <tr>
-            <th>Item ID</th>
-            <th>Item Name</th>
-            <th>Item Number</th>
-            <th>Item Description</th>
+            <th>Item Naam</th>
+            <th>Item Nummer</th>
+            <th>Datum van Inleveren</th>
+            <th>Datum van Terugbrengen</th>
+            <th>Item Omschrijving</th>
+            <th>Item Status</th>
             <th>Action</th>
         </tr>
         <?php
-        // Query for items currently in storage
-        $inStorageItemsQuery = "SELECT * FROM items WHERE itemDout IS NULL";
-        $inStorageItemsResult = $conn->query($inStorageItemsQuery);
+        // Query for borrowed items
+        $borrowedItemsQuery = "SELECT * FROM items WHERE itemState = 'Borrowed'";
+        $borrowedItemsResult = $conn->query($borrowedItemsQuery);
 
-        if ($inStorageItemsResult->num_rows > 0) {
-            while ($row = $inStorageItemsResult->fetch_assoc()) {
+        if ($borrowedItemsResult->num_rows > 0) {
+            while ($row = $borrowedItemsResult->fetch_assoc()) {
                 echo "<tr>
-                        <td>{$row['itemId']}</td>
                         <td>{$row['itemName']}</td>
                         <td>{$row['itemNumber']}</td>
+                        <td>{$row['itemDin']}</td>
+                        <td>{$row['itemDout']}</td>
                         <td>{$row['itemDescription']}</td>
+                        <td>{$row['itemState']}</td>
                         <td>
                             <form method='post' action='{$_SERVER["PHP_SELF"]}'>
                                 <input type='hidden' name='deleteItemId' value='{$row['itemId']}'>
@@ -271,7 +155,52 @@ $currentItemsResult = $conn->query($currentItemsQuery);
                     </tr>";
             }
         } else {
-            echo "<tr><td colspan='5'>No items currently in storage</td></tr>";
+            echo "<tr><td colspan='8'>No borrowed items found</td></tr>";
+        }
+        ?>
+    </table>
+</div>
+
+<div class="section">
+    <h2>Returned Items</h2>
+    <table border="1">
+        <tr>
+            <th>Item Naam</th>
+            <th>Item Nummer</th>
+            <th>Datum van Inleveren</th>
+            <th>Datum van Terugbrengen</th>
+            <th>Item Omschrijving</th>
+            <th>Item Status</th>
+            <th>Action</th>
+        </tr>
+        <?php
+        // Query for returned items
+        $returnedItemsQuery = "SELECT * FROM items WHERE itemState = 'Returned'";
+        $returnedItemsResult = $conn->query($returnedItemsQuery);
+
+        if ($returnedItemsResult->num_rows > 0) {
+            while ($row = $returnedItemsResult->fetch_assoc()) {
+                echo "<tr>
+                        <td>{$row['itemName']}</td>
+                        <td>{$row['itemNumber']}</td>
+                        <td>{$row['itemDin']}</td>
+                        <td>{$row['itemDout']}</td>
+                        <td>{$row['itemDescription']}</td>
+                        <td>{$row['itemState']}</td>
+                        <td>
+                            <form method='post' action='{$_SERVER["PHP_SELF"]}'>
+                                <input type='hidden' name='deleteItemId' value='{$row['itemId']}'>
+                                <input type='submit' value='Delete'>
+                            </form>
+                            <form method='post' action='{$_SERVER["PHP_SELF"]}'>
+                                <input type='hidden' name='editItemId' value='{$row['itemId']}'>
+                                <input type='submit' value='Edit'>
+                            </form>
+                        </td>
+                    </tr>";
+            }
+        } else {
+            echo "<tr><td colspan='8'>No returned items found</td></tr>";
         }
         ?>
     </table>
