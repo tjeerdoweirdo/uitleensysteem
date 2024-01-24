@@ -94,7 +94,36 @@ $categoryResult = $conn->query($categorySql);
             background-color: #f0f0f0;
         }
 
+        .card-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
 
+    .card {
+        margin: 15px;
+        width: 250px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-img-top {
+        max-height: 100%;
+        object-fit: fill;
+    }
+
+    .card-body {
+        padding: 15px;
+    }
+
+    .card-footer {
+        text-align: center;
+        padding: 15px;
+    }
     </style>
 
     <script>
@@ -156,22 +185,24 @@ $categoryResult = $conn->query($categorySql);
             <div id="autocomplete-results"></div>
         </section>
         <section class="card-container">
-            <?php
-            while ($row = $categoryResult->fetch_assoc()) {
-                echo '<div class="card">';
-                
-                // Displaying category image
-                $imagePath = $row['catPicture'];
-                echo '<img src="' . htmlspecialchars($imagePath) . '" alt="' . htmlspecialchars($row['catName']) . '">';
-                
-                echo '<div class="card-body">';
-                echo '<h3 class="card-title">' . htmlspecialchars($row['catName']) . '</h3>';
-                echo '</div>';
+    <?php
+    while ($row = $categoryResult->fetch_assoc()) {
+        echo '<div class="card mb-3">';
+        $imagePath = $row['catPicture'];
+        echo '<img src="' . htmlspecialchars($imagePath) . '" class="card-img-top" alt="' . htmlspecialchars($row['catName']) . '">';
+        
+        echo '<div class="card-body">';
+        echo '<h3 class="card-title">' . htmlspecialchars($row['catName']) . '</h3>';
+        echo '</div>';
+        
+        echo '<div class="card-footer">';
+        echo '<a href="#" class="btn btn-primary">View Details</a>';
+        echo '</div>';
 
-                echo '</div>';
-            }
-            ?>
-        </section>
+        echo '</div>';
+    }
+    ?>
+</section>
     </main>
 </body>
 

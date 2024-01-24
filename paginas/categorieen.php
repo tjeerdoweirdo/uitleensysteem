@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Category Manager</title>
+        <title>Categorieën toevoegen</title>
         <style>
                 h2, h3, form, .category-list {
                 opacity: 0;
@@ -136,10 +136,10 @@ $conn->close();
     <form method="post" action="" enctype="multipart/form-data">
         <input type="text" name="category" placeholder="Enter a new category" required>
         <input type="file" name="catPicture" accept="image/*">
-        <button type="submit">Add Category</button>
+        <button type="submit">Categorie toevoegen</button>
     </form>
 
-    <h2>Your Categories</h2>
+    <h2>Uw categorieën</h2>
     <div class="category-list">
         <ul>
             <?php
