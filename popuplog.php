@@ -214,7 +214,7 @@ $result = mysqli_query($conn, $sql);
                 
                     <?php    
                 
-                    $logsResult = mysqli_query($conn, "SELECT logEntry, logDate FROM logs WHERE itemId = $itemId");
+                    $logsResult = mysqli_query($conn, "SELECT logEntry, logDate FROM log WHERE itemId = $itemId");
 
                     if ($logsResult) {
                         while ($logRow = mysqli_fetch_assoc($logsResult)) {
