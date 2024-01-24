@@ -32,9 +32,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['updateItem'])) {
     $editItemName = htmlspecialchars($_POST['editItemName']);
     $editItemNumber = htmlspecialchars($_POST['editItemNumber']);
     $editItemDescription = htmlspecialchars($_POST['editItemDescription']);
+    $editItemReturnDate = htmlspecialchars($_POST['editItemReturnDate']); // Added line
 
     $updateItemQuery = "UPDATE items 
-                        SET itemName = '$editItemName', itemNumber = '$editItemNumber', itemDescription = '$editItemDescription'
+                        SET itemName = '$editItemName', itemNumber = '$editItemNumber', 
+                        itemDescription = '$editItemDescription', itemDout = '$editItemReturnDate'
                         WHERE itemId = '$itemId'";
 
     if ($conn->query($updateItemQuery) === TRUE) {
@@ -195,6 +197,7 @@ $currentItemsResult = $conn->query($currentItemsQuery);
             Item Naam: <input type='text' name='editItemName' value='<?php echo $editItemRow['itemName']; ?>'><br>
             Item Nummer: <input type='text' name='editItemNumber' value='<?php echo $editItemRow['itemNumber']; ?>'><br>
             Item Omschrijving: <textarea name='editItemDescription'><?php echo $editItemRow['itemDescription']; ?></textarea><br>
+            Datum van Terugbrengen: <input type='date' name='editItemReturnDate' value='<?php echo $editItemRow['itemDout']; ?>'><br>
             <input type='submit' name='updateItem' value='Bijwerken'>
         </form>
     </div>
