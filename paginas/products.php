@@ -1,8 +1,7 @@
 <?php
 require '../includes/db_connection.php';
 $catId = 1;
-$itemId = 1;
-
+$itemId = isset($_GET['id']) ? $_GET['id'] : 1;
 $cat = "SELECT catName FROM categories WHERE $catId";
 $product = "SELECT itemPicture, itemName, itemNumber, itemState, itemId, itemDin, itemDout, itemDescription FROM items WHERE $catId";
 $card_product = "SELECT itemPicture, itemName, itemNumber, itemState, itemId, itemDin, itemDout, itemDescription FROM items WHERE $itemId";
@@ -42,7 +41,6 @@ $userRole = 0;
         if ($result_product->num_rows > 0) {
             while ($row_product = $result_product->fetch_assoc()) {
                 $status = $row_product["itemState"];
-
                 $modalTarget = ($userRole == 1) ? '#modal1' : '#modal2';
 
                 echo "<div class='product_card fade-in-row' data-bs-toggle='modal' data-bs-target='" . $modalTarget . "' data-item-id='" . $row_product["itemId"] . "' data-item-name='" . htmlspecialchars($row_product["itemName"], ENT_QUOTES, 'UTF-8') . "' data-item-description='" . htmlspecialchars($row_product["itemDescription"], ENT_QUOTES, 'UTF-8') . "' data-item-number='" . htmlspecialchars($row_product["itemNumber"], ENT_QUOTES, 'UTF-8') . "' data-item-dout='" . $row_product["itemDout"] . "' data-item-din='" . $row_product["itemDin"] . "' data-item-picture='" . htmlspecialchars($row_product["itemPicture"], ENT_QUOTES, 'UTF-8') . "' data-item-state='" . $row_product["itemState"] . "'>";
@@ -65,7 +63,6 @@ $userRole = 0;
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="modal1Label">
                             <?php echo htmlspecialchars($row_card_product["itemName"]) ?>
-
                         </h1>
                         <button type=button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
