@@ -94,81 +94,10 @@ $categoryResult = $conn->query($categorySql);
             background-color: #f0f0f0;
         }
 
-        .categories {
-            text-align: center;
-            margin-bottom: 20px;
-        }
 
-        .categories button {
-            margin: 0 10px;
-            padding: 10px;
-            text-decoration: none;
-            color: #fff;
-            background-color: #007bff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .categories button:hover {
-            background-color: #0056b3;
-        }
-        .card-container {
-            display: flex;
-            justify-content: space-around; 
-            align-items: flex-start; 
-            flex-wrap: wrap; 
-            margin: 0 -10px; 
-        }
-
-        .card {
-            flex: 0 0 calc(30% - 20px); 
-            height: 200px; 
-            margin: 10px;
-            box-sizing: border-box;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            overflow: hidden;
-            transition: box-shadow 0.3s ease;
-        }
-
-        .card:hover {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .card img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain; 
-        }
-
-        .card-body {
-            padding: 16px;
-        }
-
-        .card-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-        .card-text {
-            font-size: 14px;
-            flex: 1;
-        }
-
-        @media (max-width: 768px) {
-            .card {
-                flex: 0 0 calc(50% - 20px);
-            }
-        }
-       
-      
     </style>
-    </style>
-  <script>
+
+    <script>
         $(document).ready(function () {
             $('#search').keyup(function () {
                 var query = $(this).val();
@@ -210,7 +139,6 @@ $categoryResult = $conn->query($categorySql);
         });
     </script>
 </head>
-   
 
 <body>
     <header>

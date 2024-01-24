@@ -10,7 +10,7 @@ include '../includes/header.php';
 require_once('../includes/db_connection.php');
 
 if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    die("Verbinding mislukt: " . $conn->connect_error);
 }
 
 $currentDate = date('Y-m-d');
@@ -23,14 +23,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['editItemId'])) {
 
     if ($editItemResult->num_rows > 0) {
         $editItemRow = $editItemResult->fetch_assoc();
-
-        echo "<form method='post' action='{$_SERVER["PHP_SELF"]}'>
-                <input type='hidden' name='itemId' value='{$editItemRow['itemId']}'>
-                Item Name: <input type='text' name='editItemName' value='{$editItemRow['itemName']}'><br>
-                Item Number: <input type='text' name='editItemNumber' value='{$editItemRow['itemNumber']}'><br>
-                Item Description: <textarea name='editItemDescription'>{$editItemRow['itemDescription']}</textarea><br>
-                <input type='submit' name='updateItem' value='Update'>
-            </form>";
     }
 }
 
@@ -46,9 +38,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['updateItem'])) {
                         WHERE itemId = '$itemId'";
 
     if ($conn->query($updateItemQuery) === TRUE) {
-        echo "Item updated successfully!";
+        echo "Item succesvol bijgewerkt!";
     } else {
-        echo "Error updating item: " . $conn->error;
+        echo "Fout bij het bijwerken van het item: " . $conn->error;
     }
 }
 
@@ -58,11 +50,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['deleteItemId'])) {
     $deleteItemQuery = "DELETE FROM items WHERE itemId = '$deleteItemId'";
 
     if ($conn->query($deleteItemQuery) === TRUE) {
-        echo "Item deleted successfully!";
+        echo "Item succesvol verwijderd!";
         header("Location: {$_SERVER['PHP_SELF']}");
         exit();
     } else {
-        echo "Error deleting item: " . $conn->error;
+        echo "Fout bij het verwijderen van het item: " . $conn->error;
     }
 }
 
@@ -77,67 +69,98 @@ $todayItemsResult = $conn->query($todayItemsQuery);
 // Query for currently borrowed items
 $currentItemsQuery = "SELECT * FROM items WHERE itemDout IS NOT NULL AND DATE(itemDout) < DATE_SUB(CURDATE(), INTERVAL 2 YEAR)";
 $currentItemsResult = $conn->query($currentItemsQuery);
-
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="nl">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elektronica Uitleen Admin</title>
+    <title>Elektronica Uitleen Beheerder</title>
     <style>
+        .section {
+            margin: 20px;
+            text-align: center;
+            overflow-x: auto;
+        }
 
+        table {
+            margin: auto;
+            border-collapse: collapse;
+            width: 100%;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
 
-    .section {
-        margin: 20px;
-        text-align: center;
-        overflow-x: auto;
-    }
+        th,
+        td {
+            padding: 10px;
+            border: 1px solid black;
+        }
 
-    table {
-        margin: auto;
-        border-collapse: collapse;
-        width: 100%;
-        overflow-x: auto;
-        white-space: nowrap;
-    }
+        th {
+            background-color: #f2f2f2;
+        }
 
-    th, td {
-        padding: 10px;
-        border: 1px solid black;
-    }
+        /* Style for the popup container */
+        .popup-container {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            border: 2px solid #ccc;
+            background-color: #fff;
+            z-index: 1000;
+        }
 
-    th {
-        background-color: #f2f2f2;
-    }
-</style>
+        /* Style for the overlay background when the popup is open */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        /* Style for the close button inside the popup */
+        .popup-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
-<!-- ... (existing code) ... -->
+    <!-- ... (existing code) ... -->
 
-<div class="section">
-    <h2>Borrowed Items</h2>
-    <table border="1">
-        <tr>
-            <th>Item Naam</th>
-            <th>Item Nummer</th>
-            <th>Datum van Inleveren</th>
-            <th>Datum van Terugbrengen</th>
-            <th>Item Omschrijving</th>
-            <th>Item Status</th>
-            <th>Action</th>
-        </tr>
-        <?php
-        // Query for borrowed items
-        $borrowedItemsQuery = "SELECT * FROM items WHERE itemState = 'Borrowed'";
-        $borrowedItemsResult = $conn->query($borrowedItemsQuery);
+    <div class="section">
+        <h2>Geleende Items</h2>
+        <table border="1">
+            <tr>
+                <th>Item Naam</th>
+                <th>Item Nummer</th>
+                <th>Datum van Inleveren</th>
+                <th>Datum van Terugbrengen</th>
+                <th>Item Omschrijving</th>
+                <th>Item Status</th>
+                <th>Actie</th>
+            </tr>
+            <?php
+            // Query for borrowed items
+            $borrowedItemsQuery = "SELECT * FROM items WHERE itemState = 'Borrowed'";
+            $borrowedItemsResult = $conn->query($borrowedItemsQuery);
 
-        if ($borrowedItemsResult->num_rows > 0) {
-            while ($row = $borrowedItemsResult->fetch_assoc()) {
-                echo "<tr>
+            if ($borrowedItemsResult->num_rows > 0) {
+                while ($row = $borrowedItemsResult->fetch_assoc()) {
+                    echo "<tr>
                         <td>{$row['itemName']}</td>
                         <td>{$row['itemNumber']}</td>
                         <td>{$row['itemDin']}</td>
@@ -147,42 +170,70 @@ $currentItemsResult = $conn->query($currentItemsQuery);
                         <td>
                             <form method='post' action='{$_SERVER["PHP_SELF"]}'>
                                 <input type='hidden' name='deleteItemId' value='{$row['itemId']}'>
-                                <input type='submit' value='Delete'>
+                                <input type='submit' value='Verwijderen'>
                             </form>
                             <form method='post' action='{$_SERVER["PHP_SELF"]}'>
                                 <input type='hidden' name='editItemId' value='{$row['itemId']}'>
-                                <input type='submit' value='Edit'>
+                                <input type='button' value='Bewerken' onclick='openPopup()'>
                             </form>
                         </td>
                     </tr>";
+                }
+            } else {
+                echo "<tr><td colspan='8'>Geen geleende items gevonden</td></tr>";
             }
-        } else {
-            echo "<tr><td colspan='8'>No borrowed items found</td></tr>";
+            ?>
+        </table>
+    </div>
+
+    <!-- Popup container for item editing -->
+    <div class="popup-container" id="itemEditPopup">
+        <span class="popup-close" onclick="closePopup()">&times;</span>
+        <h2>Edit Item</h2>
+        <form method='post' action='<?php echo $_SERVER["PHP_SELF"]; ?>'>
+            <input type='hidden' name='itemId' value='<?php echo $editItemRow['itemId']; ?>'>
+            Item Naam: <input type='text' name='editItemName' value='<?php echo $editItemRow['itemName']; ?>'><br>
+            Item Nummer: <input type='text' name='editItemNumber' value='<?php echo $editItemRow['itemNumber']; ?>'><br>
+            Item Omschrijving: <textarea name='editItemDescription'><?php echo $editItemRow['itemDescription']; ?></textarea><br>
+            <input type='submit' name='updateItem' value='Bijwerken'>
+        </form>
+    </div>
+
+    <!-- Overlay background when the popup is open -->
+    <div class="overlay" id="overlay" onclick="closePopup()"></div>
+
+    <script>
+        function openPopup() {
+            document.getElementById('itemEditPopup').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
         }
-        ?>
-    </table>
-</div>
 
-<div class="section">
-    <h2>Returned Items</h2>
-    <table border="1">
-        <tr>
-            <th>Item Naam</th>
-            <th>Item Nummer</th>
-            <th>Datum van Inleveren</th>
-            <th>Datum van Terugbrengen</th>
-            <th>Item Omschrijving</th>
-            <th>Item Status</th>
-            <th>Action</th>
-        </tr>
-        <?php
-        // Query for returned items
-        $returnedItemsQuery = "SELECT * FROM items WHERE itemState = 'Returned'";
-        $returnedItemsResult = $conn->query($returnedItemsQuery);
+        function closePopup() {
+            document.getElementById('itemEditPopup').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }
+    </script>
 
-        if ($returnedItemsResult->num_rows > 0) {
-            while ($row = $returnedItemsResult->fetch_assoc()) {
-                echo "<tr>
+    <div class="section">
+        <h2>Teruggebrachte Items</h2>
+        <table border="1">
+            <tr>
+                <th>Item Naam</th>
+                <th>Item Nummer</th>
+                <th>Datum van Inleveren</th>
+                <th>Datum van Terugbrengen</th>
+                <th>Item Omschrijving</th>
+                <th>Item Status</th>
+                <th>Actie</th>
+            </tr>
+            <?php
+            // Query for returned items
+            $returnedItemsQuery = "SELECT * FROM items WHERE itemState = 'Returned'";
+            $returnedItemsResult = $conn->query($returnedItemsQuery);
+
+            if ($returnedItemsResult->num_rows > 0) {
+                while ($row = $returnedItemsResult->fetch_assoc()) {
+                    echo "<tr>
                         <td>{$row['itemName']}</td>
                         <td>{$row['itemNumber']}</td>
                         <td>{$row['itemDin']}</td>
@@ -192,21 +243,21 @@ $currentItemsResult = $conn->query($currentItemsQuery);
                         <td>
                             <form method='post' action='{$_SERVER["PHP_SELF"]}'>
                                 <input type='hidden' name='deleteItemId' value='{$row['itemId']}'>
-                                <input type='submit' value='Delete'>
+                                <input type='submit' value='Verwijderen'>
                             </form>
                             <form method='post' action='{$_SERVER["PHP_SELF"]}'>
                                 <input type='hidden' name='editItemId' value='{$row['itemId']}'>
-                                <input type='submit' value='Edit'>
+                                <input type='button' value='Bewerken' onclick='openPopup()'>
                             </form>
                         </td>
                     </tr>";
+                }
+            } else {
+                echo "<tr><td colspan='8'>Geen teruggebrachte items gevonden</td></tr>";
             }
-        } else {
-            echo "<tr><td colspan='8'>No returned items found</td></tr>";
-        }
-        ?>
-    </table>
-</div>
+            ?>
+        </table>
+    </div>
 
     <?php
     $conn->close();
