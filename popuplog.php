@@ -1,5 +1,7 @@
 <?php
 require_once 'includes/db_connection.php';
+require_once 'includes/log.inc.php';
+require_once 'includes/fetch.log.php';
 
 $sql = "SELECT * FROM items;";
 $result = mysqli_query($conn, $sql);
@@ -50,12 +52,9 @@ $result = mysqli_query($conn, $sql);
                         <td>
                             <?php echo $row['itemState']; ?>
                         </td>
-                        <td><button type="button" class="btn btn-primary meer" data-bs-toggle="modal"
-                                data-bs-target="#modal1">Item bewerken</button> </td>
-                        <td><button type="button" class="btn btn-dark logs" data-bs-toggle="modal" data-bs-target="#logs"><i
-                                    class="bi bi-journal-text"></i></td>
-                        <td><button type="button" class="btn btn-danger verwijder" data-bs-target="#verwijdermodal"
-                                data-bs-toggle="verwijdermodal"><i class="bi bi-trash"></i></button></td>
+                        <td><button type="button" class="btn btn-primary meer" data-bs-toggle="modal" data-bs-target="#modal1">Item bewerken</button> </td>
+                        <td><button type="button" class="btn btn-dark logs" data-bs-toggle="modal" data-bs-target="#logs"><i class="bi bi-journal-text"></i></td>
+                        <td><button type="button" class="btn btn-danger verwijder" data-bs-target="#verwijdermodal" data-bs-toggle="verwijdermodal"><i class="bi bi-trash"></i></button></td>
                     </tr>
                     <?php
                 }
@@ -210,16 +209,22 @@ $result = mysqli_query($conn, $sql);
                         </div>
                     </div>
                 </form>
+                Logs
+                <div class="logcontainer" style="max-height: 300px; overflow-y: auto;">
+                
+                    <?php    
+                
+                    $logsResult = mysqli_query($conn, "SELECT logEntry, logDate FROM logs WHERE itemId = $itemId");
+
+                    if ($logsResult) {
+                        while ($logRow = mysqli_fetch_assoc($logsResult)) {
+                            echo '<p>Log Entry: ' . $logRow['logEntry'] . '<br>Date: ' . $logRow['logDate'] . '</p>';
+                        }
+                    }
+                    ?>
+
                 </div>
-                <?php while ($logRow = mysqli_fetch_assoc($result)) { ?>
-                    <div>
-                        <p>
-                            <?php echo $logRow['itemLogs']; ?>
-                        </p>
-                    </div>
-                <?php } ?>
-                <?php mysqli_data_seek($result, 0); ?>
-            
+                </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
             </div>
@@ -250,13 +255,9 @@ $result = mysqli_query($conn, $sql);
 
             var $tr = $(this).closest('tr');
             var itemId = $tr.data('itemItemid');
-            var logId = $('#log_id').val();
 
             $('#log_id').val(itemId);
-            
-            
-            console.log('itemId:', itemId);
-            console.log('logId:', logId);
+        
         });  
 
         });
