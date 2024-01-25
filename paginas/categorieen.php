@@ -52,6 +52,17 @@
             margin-bottom: 5px;
             cursor: pointer; 
         }
+
+        .category-list li a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+            width: 100%; 
+        }
+
+     
     </style>
 </head>
 <body>
@@ -93,9 +104,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $uniqueId = "category_" . $lastInsertedId;
             echo "Category added successfully with ID: $lastInsertedId";
             echo "<li id='{$uniqueId}'>";
+            echo "<a href='productslogin.php?catId={$lastInsertedId}'>";
             echo "<span>{$category}</span>";
-            echo "<img src='{$catPicture}' alt='Category Image' style='max-width: 100px; max-height: 100px;'>";
+            echo "<img src='{$catPicture}' alt='Category Image' style='max-width: 50px; max-height: 50px;'>";
             echo "<button type='button' onclick='removeCategory({$lastInsertedId})'>Remove</button>";
+            echo "</a>";
             echo "</li>";
         } else {
             echo "Error: " . $sql . "<br>" . $conn->error;
@@ -142,9 +155,11 @@ $conn->close();
                 $imagePath = $row['catPicture'];
                 $uniqueId = "category_" . $categoryId;
                 echo "<li id='{$uniqueId}'>";
+                echo "<a href='productslogin.php?catId={$categoryId}'>";
                 echo "<span>{$categoryName}</span>";
-                echo "<img src='{$imagePath}' alt='Category Image' style='max-width: 100px; max-height: 100px;'>";
+                echo "<img src='{$imagePath}' alt='Category Image' style='max-width: 75px; max-height: 75px;'>";
                 echo "<button type='button' onclick='removeCategory({$categoryId})'>Remove</button>";
+                echo "</a>";
                 echo "</li>";
             }
         }
@@ -156,8 +171,8 @@ $conn->close();
 <script>
     $(document).ready(function() {
         
-        $(".category-list ul li span").click(function() {
-            var categoryId = $(this).closest("li").attr("id").replace("category_", "");
+        $(".category-list ul li").click(function() {
+            var categoryId = $(this).attr("id").replace("category_", "");
             window.location.href = "productslogin.php?catId=" + categoryId;
         });
     });
