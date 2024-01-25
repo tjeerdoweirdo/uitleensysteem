@@ -32,11 +32,13 @@ $userRole = 0;
 <body>
     <div class="bg-dark text-white">
         <header>
-            <h1><?php echo $row_cat["catName"]; ?></h1>
-        </header>
-        <a class="nav-item"><a class="nav-link text-white" href="index.php">Home</a></a>
+            <div class="d-flex">
+                <div class="p-2"><h1><?php echo $row_cat["catName"]; ?></h1></div>
+       
+        <div class="p-2 ms-auto"><a class="nav-item"><a class="nav-link text-white" href="categorieen.php"><h3>Terug<h3></a></div> 
+        </div>
     </div>
-
+ </header>
     <div class='cat_container'>
         <?php
         if ($result_product->num_rows > 0) {
