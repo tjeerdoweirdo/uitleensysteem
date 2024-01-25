@@ -1,11 +1,11 @@
 <?php
 require '../includes/db_connection.php';
 $catId = isset($_GET['catId']) ? $_GET['catId'] : '';
-$itemId = 1;
+$itemId = isset($_GET['itemId']) ? $_GET['itemId'] : '';
 
 $cat = "SELECT catName FROM categories WHERE catId = '$catId'";
 $product = "SELECT itemPicture, itemName, itemNumber, itemState, itemId, itemDin, itemDout, itemDescription FROM items WHERE catId = '$catId'";
-$card_product = "SELECT itemPicture, itemName, itemNumber, itemState, itemId, itemDin, itemDout, itemDescription FROM items WHERE $itemId";
+$card_product = "SELECT itemPicture, itemName, itemNumber, itemState, itemId, itemDin, itemDout, itemDescription FROM items WHERE itemId = 'data-item-id'";
 
 $result_product = $conn->query($product);
 $result_cat = $conn->query($cat);
@@ -14,9 +14,7 @@ $result_card = $conn->query($card_product);
 $row_cat = $result_cat->fetch_assoc();
 $result_card_product = $conn->query($card_product);
 $row_card_product = $result_card_product->fetch_assoc();
-
 $userRole = 0;
-
 ?>
 
 <html>
@@ -26,7 +24,6 @@ $userRole = 0;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/prod.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <script src="../js/prod.js"></script>
 </head>
 
 <body>
@@ -41,14 +38,37 @@ $userRole = 0;
 </div>
  </header>
     <div class='cat_container'>
+        <script>
+            function updateModal2Content(item) {
+                $('#modal2titlename').text(item.data('item-name'));
+                $('#modal2name').text(item.data('item-name'));
+                $('#modal2number').text(item.data('item-number'));
+                $('#modal2cat').text(item.data('item-cat'));
+                $('#modal2dout').text(item.data('item-dout'));
+                $('#modal2din').text(item.data('item-din'));
+                $('#modal2state').text(item.data('item-state'));
+                $('#modal2description').text(item.data('item-description'));
+                $('#item').val(item.data('item-name'));
+                $('#nummer').val(item.data('item-number'));
+                $('#categorie').val(item.data('item-cat')).prop('disabled', true);
+                $('#datumuit').val(item.data('item-dout'));
+                $('#datumin').val(item.data('item-din'));
+                $('#staat').val(item.data('item-state')).prop('disabled', true);
+                $('#omschrijving').val(item.data('item-description'));
+
+                $('#foto').attr('src', 'data:image/jpeg;base64,' + item.data('item-picture'));
+
+                $('#modal2').modal('show');
+            }
+        </script>
+
         <?php
         if ($result_product->num_rows > 0) {
             while ($row_product = $result_product->fetch_assoc()) {
                 $status = $row_product["itemState"];
                 $modalTarget = ($userRole == 1) ? '#modal1' : '#modal2';
 
-                echo "<div class='product_card fade-in-row' data-bs-toggle='modal' data-bs-target='" . $modalTarget . "' data-item-id='" . $row_product["itemId"] . "' data-item-name='" . htmlspecialchars($row_product["itemName"], ENT_QUOTES, 'UTF-8') . "' data-item-description='" . htmlspecialchars($row_product["itemDescription"], ENT_QUOTES, 'UTF-8') . "' data-item-number='" . htmlspecialchars($row_product["itemNumber"], ENT_QUOTES, 'UTF-8') . "' data-item-dout='" . $row_product["itemDout"] . "' data-item-din='" . $row_product["itemDin"] . "' data-item-picture='" . htmlspecialchars($row_product["itemPicture"], ENT_QUOTES, 'UTF-8') . "' data-item-state='" . $row_product["itemState"] . "'>";
-                echo "<img src='" . htmlspecialchars($row_product["itemPicture"], ENT_QUOTES, 'UTF-8') . "' alt='Product Photo'>";
+                echo "<div class='product_card fade-in-row' onclick='updateModal2Content($(this))' data-bs-toggle='modal' data-bs-target='" . $modalTarget . "' data-item-id='" . $row_product["itemId"] . "' data-item-name='" . htmlspecialchars($row_product["itemName"], ENT_QUOTES, 'UTF-8') . "' data-item-description='" . htmlspecialchars($row_product["itemDescription"], ENT_QUOTES, 'UTF-8') . "' data-item-number='" . htmlspecialchars($row_product["itemNumber"], ENT_QUOTES, 'UTF-8') . "' data-item-dout='" . $row_product["itemDout"] . "' data-item-din='" . $row_product["itemDin"] . "' data-item-picture='" . htmlspecialchars($row_product["itemPicture"], ENT_QUOTES, 'UTF-8') . "' data-item-state='" . $row_product["itemState"] . "'>";
                 echo "<p>" . htmlspecialchars($row_product["itemName"], ENT_QUOTES, 'UTF-8') . "</p>";
                 echo "<p>" . htmlspecialchars($row_product["itemNumber"], ENT_QUOTES, 'UTF-8') . "</p>";
                 echo "<p>" . $status . "</p>";
@@ -59,7 +79,9 @@ $userRole = 0;
         }
         ?>
     </div>
+    <?php
 
+    ?>
     <div class="modal fade" id="modal1" tabindex="-1" aria-labelledby="modal1Label" aria-hidden="true">
         <form id="save" method="POST" enctype="multipart/form-data">
             <div class="modal-dialog modal-xl">
@@ -132,7 +154,7 @@ $userRole = 0;
                                     <div class="form-group">
                                         <label>Foto:</label>
                                         <img style="height: 500px; width: 550px;" src="data:image/jpeg;base64,<?php echo "<img src='" . htmlspecialchars($row_card_product["itemPicture"], ENT_QUOTES, 'UTF-8') . "'"; ?>" alt="<?php echo $row_card_product['itemName']; ?>">
-                                        <input type="file" name="foto" id="foto" class="form-control" style="margin-top: 8px;"> 
+                                        <input type="file" name="foto" id="foto" class="form-control" style="margin-top: 8px;">
                                     </div>
                                 </div>
                             </div>
@@ -199,10 +221,7 @@ $userRole = 0;
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="modal1Label">
-                            <?php echo htmlspecialchars($row_card_product["itemName"]) ?>
-
-                        </h1>
+                        <h1 class="modal-title fs-5" id="modal2name"></h1>
                         <button type=button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
 
@@ -212,12 +231,12 @@ $userRole = 0;
                                 <div class="col">
                                     <div class="form-group">
                                         <label>Item:</label>
-                                        <input readonly="readonly" type="text" name="item" id="item" class="form-control" placeholder="" value="<?php echo htmlspecialchars($row_card_product["itemName"], ENT_QUOTES, 'UTF-8'); ?>">
+                                        <p disabled id="modal2titlename" class="form-control"></p>
                                     </div>
 
                                     <div class="form-group">
                                         <label>Serienummer:</label>
-                                        <input readonly="readonly" type="text" name="item" id="item" class="form-control" placeholder="" value="<?php echo htmlspecialchars($row_card_product["itemNumber"], ENT_QUOTES, 'UTF-8'); ?>">
+                                        <p disabled id="modal2number" class="form-control"></p>
                                     </div>
                                     <div class="form-group">
                                         <label>Categorie:</label>
@@ -238,12 +257,12 @@ $userRole = 0;
                                     <div class="d-flex mb-3" style="margin-bottom: 0px!important;">
                                         <div class="form-group p-2" style="padding-left: 0px!important;">
                                             <label>Datum uitgeleend:</label>
-                                            <input readonly="readonly" type="date" name="datumuit" value="<?php echo htmlspecialchars($row_card_product["itemDin"], ENT_QUOTES, 'UTF-8'); ?>" id="datumuit" class="form-control" placeholder="">
+                                            <p disabled id="modal2din" class="form-control"></p>
                                         </div>
 
                                         <div class="form-group p-2">
                                             <label>Datum retour:</label>
-                                            <input readonly="readonly" type="date" name="datumin" value="<?php echo htmlspecialchars($row_card_product["itemDout"], ENT_QUOTES, 'UTF-8'); ?>" id="datumin" class="form-control" placeholder="">
+                                            <p disabled id="modal2dout" class="form-control"></p>
                                         </div>
                                     </div>
 
@@ -254,19 +273,19 @@ $userRole = 0;
                                             <option value="Reparatie">Reparatie</option>
                                             <option value="Kapot">Kapot</option>
                                             <option value="Anders">Anders (zie omschrijving)</option>
-                                        </select>
+                                        </select>   
                                     </div>
 
                                     <div class="form-group">
                                         <label>Omschrijving:</label>
-                                        <textarea rows="7" name="omschrijving" value="<?php echo htmlspecialchars($row_card_product["itemDescription"], ENT_QUOTES, 'UTF-8'); ?>" id="omschrijving" class="form-control" readonly="readonly"></textarea>
+                                        <textarea id="modal2description" rows="7" name="omschrijving" class="form-control" disabled></textarea>
                                     </div>
                                 </div>
 
                                 <div class="col">
                                     <div class="form-group">
                                         <label>Foto:</label>
-                                        <img style="height: 500px; width: 550px;" src="data:image/jpeg;base64,<?php echo base64_encode($row_card_product['itemPicture']); ?>" alt="<?php echo $row_card_product['itemName']; ?>">
+                                        <img id="modal2foto" style="height: 500px; width: 550px;" src="data:image/jpeg;base64">
                                     </div>
                                 </div>
                             </div>
