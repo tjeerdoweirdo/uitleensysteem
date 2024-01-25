@@ -4,12 +4,12 @@ include("../includes/db_connection.php");
 if (isset($_GET['query'])) {
     $searchTerm = $_GET['query'];
 
-    $itemSearchSql = "SELECT itemName FROM items WHERE itemName LIKE '%{$searchTerm}%' LIMIT 5";
+    $itemSearchSql = "SELECT itemId, itemName FROM items WHERE itemName LIKE '%{$searchTerm}%' LIMIT 5";
     $itemSearchResult = $conn->query($itemSearchSql);
 
     $results = array();
     while ($row = $itemSearchResult->fetch_assoc()) {
-        $results[] = $row['itemName'];
+        $results[] = array('id' => $row['itemId'], 'name' => $row['itemName']);
     }
 
     echo json_encode($results);
@@ -19,7 +19,6 @@ if (isset($_GET['query'])) {
 $categorySql = "SELECT catName, catPicture, catId FROM categories LIMIT 6";
 $categoryResult = $conn->query($categorySql);
 ?>
-
 <!DOCTYPE html>
 <html lang="nl">
 
@@ -125,7 +124,8 @@ $categoryResult = $conn->query($categorySql);
         }
     </style>
 
-    <script>
+   
+<script>
         $(document).ready(function() {
             $('#search').keyup(function() {
                 var query = $(this).val();
@@ -144,7 +144,7 @@ $categoryResult = $conn->query($categorySql);
                                 autocompleteResults.empty();
 
                                 results.forEach(function(result) {
-                                    autocompleteResults.append('<div>' + result + '</div>');
+                                    autocompleteResults.append('<div class="autocomplete-item" data-itemid="' + result.id + '">' + result.name + '</div>');
                                 });
 
                                 autocompleteResults.show();
@@ -160,11 +160,17 @@ $categoryResult = $conn->query($categorySql);
                     $('#autocomplete-results').hide();
                 }
             });
+
+            $(document).on('click', '.autocomplete-item', function() {
+                var itemId = $(this).data('itemid');
+                $('#popup-container').load('popuplog.php?itemId=' + encodeURIComponent(itemId));
+                $('#popup-container').show();
+            });
+
             $(document).on('click', '.view-details-btn', function(e) {
                 e.preventDefault();
 
                 var categoryId = $(this).data('categoryid');
-
                 window.location.href = 'products.php?catId=' + categoryId;
             });
         });
@@ -173,14 +179,14 @@ $categoryResult = $conn->query($categorySql);
 
 <body>
     <header>
-        <h1>Uitleen systeem</h1>
+        <h1>Home</h1>
         <a href="login.php" class="login-btn">Inloggen</a>
     </header>
 
     <main>
         <section class="hero">
-            <h2>Deel leen overzicht</h2>
-            <p>de overzicht voor alle elektronica</p>
+
+            <p>Het overzicht voor alle elektronica</p>
         </section>
         <section class="search-bar">
             <input type="text" id="search" name="search" placeholder="Zoeken...">
@@ -205,6 +211,7 @@ $categoryResult = $conn->query($categorySql);
             }
             ?>
         </section>
+        <div id="popup-container"></div>
     </main>
 </body>
 
