@@ -213,14 +213,16 @@ $result = mysqli_query($conn, $sql);
                 <div class="logcontainer" style="max-height: 300px; overflow-y: auto;">
                 
                     <?php    
-                
-                    $logsResult = mysqli_query($conn, "SELECT logEntry, logDate FROM logs WHERE itemId = $itemId");
+$logsResult = mysqli_query($conn, "SELECT logEntry, logDate FROM log WHERE itemId = $itemId");
 
-                    if ($logsResult) {
-                        while ($logRow = mysqli_fetch_assoc($logsResult)) {
-                            echo '<p>Log Entry: ' . $logRow['logEntry'] . '<br>Date: ' . $logRow['logDate'] . '</p>';
-                        }
-                    }
+if (!$logsResult) {
+    die("Error: " . mysqli_error($conn));
+}
+
+while ($logRow = mysqli_fetch_assoc($logsResult)) {
+    echo '<p>Log Entry: ' . $logRow['logEntry'] . '<br>Date: ' . $logRow['logDate'] . '</p>';
+}
+
                     ?>
 
                 </div>

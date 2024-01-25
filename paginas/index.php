@@ -16,7 +16,7 @@ if (isset($_GET['query'])) {
     exit();
 }
 
-$categorySql = "SELECT catName, catPicture FROM categories LIMIT 6";
+$categorySql = "SELECT catName, catPicture, catId FROM categories LIMIT 6";
 $categoryResult = $conn->query($categorySql);
 ?>
 
@@ -28,7 +28,6 @@ $categoryResult = $conn->query($categorySql);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../css/styles.css">
     <title>elektronica lenen App</title>
 
     <style>
@@ -95,54 +94,56 @@ $categoryResult = $conn->query($categorySql);
         }
 
         .card-container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
 
-    .card {
-        margin: 15px;
-        width: 250px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: box-shadow 0.3s ease;
-    }
+        .card {
+            margin: 15px;
+            width: 250px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+        }
 
-    .card:hover {
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    }
+        .card:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
 
-    .card-img-top {
-        max-height: 100%;
-        object-fit: fill;
-    }
+        .card-img-top {
+       
+            object-fit: cover;
+        }
 
-    .card-body {
-        padding: 15px;
-    }
+        .card-body {
+            padding: 15px;
+        }
 
-    .card-footer {
-        text-align: center;
-        padding: 15px;
-    }
+        .card-footer {
+            text-align: center;
+            padding: 15px;
+        }
     </style>
 
     <script>
-        $(document).ready(function () {
-            $('#search').keyup(function () {
+        $(document).ready(function() {
+            $('#search').keyup(function() {
                 var query = $(this).val();
 
                 if (query.length >= 2) {
                     $.ajax({
                         url: 'index.php',
                         method: 'GET',
-                        data: { query: query },
-                        success: function (data) {
+                        data: {
+                            query: query
+                        },
+                        success: function(data) {
                             try {
                                 var results = JSON.parse(data);
                                 var autocompleteResults = $('#autocomplete-results');
                                 autocompleteResults.empty();
 
-                                results.forEach(function (result) {
+                                results.forEach(function(result) {
                                     autocompleteResults.append('<div>' + result + '</div>');
                                 });
 
@@ -151,7 +152,7 @@ $categoryResult = $conn->query($categorySql);
                                 console.error('Error parsing JSON:', error);
                             }
                         },
-                        error: function (xhr, status, error) {
+                        error: function(xhr, status, error) {
                             console.error('Ajax request error:', error);
                         }
                     });
@@ -159,11 +160,12 @@ $categoryResult = $conn->query($categorySql);
                     $('#autocomplete-results').hide();
                 }
             });
+            $(document).on('click', '.view-details-btn', function(e) {
+                e.preventDefault();
 
-            $(document).on('click', function (e) {
-                if (!$(e.target).closest('#autocomplete-results').length) {
-                    $('#autocomplete-results').hide();
-                }
+                var categoryId = $(this).data('categoryid');
+
+                window.location.href = 'products.php?catId=' + categoryId;
             });
         });
     </script>
@@ -185,24 +187,24 @@ $categoryResult = $conn->query($categorySql);
             <div id="autocomplete-results"></div>
         </section>
         <section class="card-container">
-    <?php
-    while ($row = $categoryResult->fetch_assoc()) {
-        echo '<div class="card mb-3">';
-        $imagePath = $row['catPicture'];
-        echo '<img src="' . htmlspecialchars($imagePath) . '" class="card-img-top" alt="' . htmlspecialchars($row['catName']) . '">';
-        
-        echo '<div class="card-body">';
-        echo '<h3 class="card-title">' . htmlspecialchars($row['catName']) . '</h3>';
-        echo '</div>';
-        
-        echo '<div class="card-footer">';
-        echo '<a href="#" class="btn btn-primary">View Details</a>';
-        echo '</div>';
+            <?php
+            while ($row = $categoryResult->fetch_assoc()) {
+                echo '<div class="card mb-3">';
+                $imagePath = $row['catPicture'];
+                echo '<img src="' . htmlspecialchars($imagePath) . '" class="card-img-top" alt="' . htmlspecialchars($row['catName']) . '">';
 
-        echo '</div>';
-    }
-    ?>
-</section>
+                echo '<div class="card-body">';
+                echo '<h3 class="card-title">' . htmlspecialchars($row['catName']) . '</h3>';
+                echo '</div>';
+
+                echo '<div class="card-footer">';
+                echo '<a class="btn btn-primary view-details-btn" data-categoryid="' . htmlspecialchars($row['catId']) . '">View Details</a>';
+                echo '</div>';
+                
+                echo '</div>';
+            }
+            ?>
+        </section>
     </main>
 </body>
 

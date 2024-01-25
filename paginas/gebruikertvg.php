@@ -7,19 +7,6 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-function generateRandomPassword($length = 8)
-{
-    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    $password = '';
-    $charCount = strlen($characters) - 1;
-
-    for ($i = 0; $i < $length; $i++) {
-        $password .= $characters[mt_rand(0, $charCount)];
-    }
-
-    return $password;
-}
-
 include('../includes/db_connection.php');
 
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -28,13 +15,12 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["email"])) {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["email"]) && isset($_POST["password"])) {
     $usersEmail = $_POST["email"];
-
-    $randomPassword = generateRandomPassword();
+    $usersPassword = $_POST["password"];
 
     $sql_insert = $conn->prepare("INSERT INTO users (usersPwd, usersEmail) VALUES (?, ?)");
-    $sql_insert->bind_param("ss", $randomPassword, $usersEmail);
+    $sql_insert->bind_param("ss", $usersPassword, $usersEmail);
 
     if ($sql_insert->execute()) {
         echo "User successfully added.";
@@ -93,7 +79,7 @@ $result = $conn->query($sql_select);
         .fade-in {
             animation: fadeIn 1s ease-in-out;
         }
-        
+
         h2 {
             text-align: center;
         }
@@ -111,7 +97,11 @@ $result = $conn->query($sql_select);
                 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
                     <div class="form-group">
                         <label for="email">Email:</label>
-                        <input type="email" class="form-control" name="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
+                        <input type="email" class="form-control" name="email" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" class="form-control" name="password" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Toevoegen</button>
                 </form>
