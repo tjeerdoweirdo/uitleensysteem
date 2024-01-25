@@ -135,6 +135,7 @@ if (!$allItemsResult) {
             right: 10px;
             cursor: pointer;
         }
+        
     </style>
 </head>
 

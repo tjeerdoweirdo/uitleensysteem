@@ -28,11 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $voorwerp_naam = $_POST["itemName"];
     $item_number = $_POST["itemNumber"];
-    $datum_inleveren = $_POST["itemDin"];
-    $datum_terugbrengen = $_POST["itemDout"];
     $item_description = $_POST["itemDescription"];
-    $selected_item_state = $_POST["itemState"];
-
     $item_category = $_POST["itemCategory"];
 
     $targetDirectory = "uploads/";
@@ -76,8 +72,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    $insertQuery = "INSERT INTO items (itemName, itemNumber, itemDin, itemDout, itemDescription, itemState, itemPicture, catId) 
-                    VALUES ('$voorwerp_naam', '$item_number', '$datum_inleveren', '$datum_terugbrengen', '$item_description', '$selected_item_state', '$targetFile', '$item_category')";
+    $insertQuery = "INSERT INTO items (itemName, itemNumber, itemDescription, itemPicture, catId) 
+                    VALUES ('$voorwerp_naam', '$item_number', '$item_description', '$targetFile', '$item_category')";
 
     if ($conn->query($insertQuery) === TRUE) {
         $successMessage = "Item successfully added!";
@@ -142,26 +138,8 @@ include '../includes/header.php';
             </div>
 
             <div class="form-group">
-                <label for="itemDin">Datum van Inleveren:</label>
-                <input type="date" class="form-control" name="itemDin">
-            </div>
-
-            <div class="form-group">
-                <label for="itemDout">Datum van Terugbrengen:</label>
-                <input type="date" class="form-control" name="itemDout">
-            </div>
-
-            <div class="form-group">
                 <label for="itemDescription">Item Omschrijving:</label>
                 <input type="text" class="form-control" name="itemDescription">
-            </div>
-
-            <div class="form-group">
-                <label for="itemState">Item Status:</label>
-                <select class="form-control" name="itemState">
-                    <option value="beschikbaar">Beschikbaar</option>
-                    <option value="uitgeleend">Uitgeleend</option>
-                </select>
             </div>
 
             <div class="form-group">

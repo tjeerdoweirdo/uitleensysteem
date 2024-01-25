@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['changeStatus'])) {
         // Perform turn-in
         $turnInQuery = "UPDATE items 
                         SET itemDin = NULL, itemDout = NULL, itemState = 'Teruggebracht' 
-                        WHERE itemId = '$itemId'";
+                        WHERE itemId = $itemId";
 
         if ($conn->query($turnInQuery) === TRUE) {
             echo "Item succesvol ingeleverd!";
@@ -56,7 +56,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['changeStatus'])) {
         }
     }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -89,6 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['changeStatus'])) {
         th {
             background-color: #f2f2f2;
         }
+        
     </style>
 </head>
 
@@ -128,10 +128,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['changeStatus'])) {
                                     <input type='hidden' name='itemId' value='{$row['itemId']}'>
                                     <input type='hidden' name='newStatus' value='Ingeleverd'>
                                     <button type='submit' name='changeStatus'>Inleveren</button>
-                                </form>
-                                <form method='post' action='{$_SERVER["PHP_SELF"]}'>
-                                    <input type='hidden' name='editItemId' value='{$row['itemId']}'>
-                                    <button type='submit'>Bewerken</button>
                                 </form>
                             </td>
                         </tr>";
