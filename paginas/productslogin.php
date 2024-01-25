@@ -30,11 +30,16 @@ $userRole = 0;
 </head>
 
 <body>
+  
+        <header>  
     <div class="bg-dark text-white">
-        <header>
-            <h1><?php echo $row_cat["catName"]; ?></h1>
+    <div class="d-flex mb-3">
+    <div class="p-2">
+    <h1><?php echo $row_cat["catName"]; ?></h1>
+</div>
         </header>
-        <a class="nav-item"><a class="nav-link text-white" href="index.php">Home</a></a>
+        <div class="p-2 ms-auto"><a class="nav-item"><a class="nav-link text-white" href="index.php">Home</a></a>
+    </div>
     </div>
 
     <div class='cat_container'>

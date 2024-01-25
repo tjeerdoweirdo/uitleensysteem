@@ -272,6 +272,7 @@ $userRole = 0;
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Sluiten</button>
+                        <button type="submit" name="savedata" class="btn btn-primary">lenen</button>
                     </div>
                 </div>
             </div>
