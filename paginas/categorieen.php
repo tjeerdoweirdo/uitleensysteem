@@ -161,6 +161,7 @@ $conn->close();
                 echo "<button type='button' onclick='removeCategory({$categoryId})'>Remove</button>";
                 echo "</a>";
                 echo "</li>";
+                
             }
         }
         ?>

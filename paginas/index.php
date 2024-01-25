@@ -192,6 +192,7 @@ $categoryResult = $conn->query($categorySql);
             <input type="text" id="search" name="search" placeholder="Zoeken...">
             <div id="autocomplete-results"></div>
         </section>
+        
         <section class="card-container">
             <?php
             while ($row = $categoryResult->fetch_assoc()) {
