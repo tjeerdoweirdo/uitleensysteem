@@ -68,9 +68,6 @@ $allItemsResult = $conn->query($allItemsQuery);
 if (!$allItemsResult) {
     die("Error fetching items: " . $conn->error);
 }
-
-
-
 ?>
 
 <!DOCTYPE html>
@@ -81,6 +78,10 @@ if (!$allItemsResult) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Elektronica Uitleen Beheerder</title>
     <style>
+        body {
+            font-family: 'Arial', sans-serif;
+        }
+
         .section {
             margin: 20px;
             text-align: center;
@@ -98,7 +99,7 @@ if (!$allItemsResult) {
         th,
         td {
             padding: 10px;
-            border: 1px solid black;
+            border: 1px solid #ddd;
         }
 
         th {
@@ -116,6 +117,10 @@ if (!$allItemsResult) {
             border: 2px solid #ccc;
             background-color: #fff;
             z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: left;
         }
 
         /* Style for the overlay background when the popup is open */
@@ -136,14 +141,35 @@ if (!$allItemsResult) {
             top: 10px;
             right: 10px;
             cursor: pointer;
+            font-size: 18px;
+            color: #333;
         }
-        
+
+        /* Style for buttons */
+        input[type="submit"],
+        input[type="button"] {
+            padding: 8px;
+            margin: 4px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+        }
+
+        input[type="submit"]:hover,
+        input[type="button"]:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 
-<body>
-    <!-- ... (existing code) ... -->
+<!-- ... (existing code) ... -->
 
+</html>
+
+
+<body>
     <div class="section">
         <h2>Alle Items</h2>
         <table border="1">
