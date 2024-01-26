@@ -176,8 +176,8 @@ if (!$allItemsResult) {
             <tr>
                 <th>Item Naam</th>
                 <th>Item Nummer</th>
-                <th>Datum van Inleveren</th>
-                <th>Datum van Terugbrengen</th>
+                <th>uitgeleend op</th>
+                <th>inlevern op</th>
                 <th>Item Omschrijving</th>
                 <th>Item Status</th>
                 <th>Actie</th>

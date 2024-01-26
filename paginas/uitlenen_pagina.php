@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-// Redirect to login if user is not authenticated
+// Redirect to login if the user is not authenticated
 if (!isset($_SESSION['user_id'])) {
     header('Location: login.php');
     exit();
@@ -11,12 +11,12 @@ if (!isset($_SESSION['user_id'])) {
 include '../includes/header.php';
 require_once('../includes/db_connection.php');
 
-// Handle database connection error
+// Handle the database connection error
 if ($conn->connect_error) {
     die("Verbinding mislukt: " . $conn->connect_error);
 }
 
-// Get current date
+// Get the current date
 $currentDate = date('Y-m-d');
 
 // Handle status change form submission
@@ -32,9 +32,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['changeStatus'])) {
                         WHERE itemId = $itemId";
 
         if ($conn->query($turnInQuery) === TRUE) {
-            echo "Item succesvol ingeleverd!";
+            echo '<script>showSuccessMessage("Item succesvol ingeleverd!");</script>';
         } else {
-            echo "Fout bij inleveren item: " . $conn->error;
+            echo '<script>showErrorMessage("Fout bij inleveren item: ' . $conn->error . '");</script>';
         }
     } elseif ($newStatus == 'Geleend') {
         // Perform borrowing
@@ -46,18 +46,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['changeStatus'])) {
                         WHERE itemId = '$itemId'";
 
         if ($conn->query($borrowQuery) === TRUE) {
-            echo "Item succesvol geleend!";
+            echo '<script>showSuccessMessage("Item succesvol geleend!");</script>';
         } else {
-            echo "Fout bij lenen item: " . $conn->error;
+            echo '<script>showErrorMessage("Fout bij lenen item: ' . $conn->error . '");</script>';
         }
     } else {
         // Perform status change
         $changeStatusQuery = "UPDATE items SET itemState = '$newStatus' WHERE itemId = '$itemId'";
 
         if ($conn->query($changeStatusQuery) === TRUE) {
-            echo "Status succesvol bijgewerkt!";
+            echo '<script>showSuccessMessage("Status succesvol bijgewerkt!");</script>';
         } else {
-            echo "Fout bij bijwerken status: " . $conn->error;
+            echo '<script>showErrorMessage("Fout bij bijwerken status: ' . $conn->error . '");</script>';
         }
     }
     // Add more conditions if needed for different statuses
@@ -168,6 +168,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['changeStatus'])) {
                 font-size: 12px;
             }
         }
+
+        /* Style for success message */
+        .success-message {
+            display: none;
+            color: #4caf50;
+            background-color: #e7f3eb;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 
@@ -267,6 +278,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['changeStatus'])) {
             ?>
         </table>
     </div>
+
+    <!-- Success message div -->
+    <div id="successMessage" class="success-message"></div>
+
+    <!-- JavaScript for success message handling -->
+    <script>
+        function showSuccessMessage(message) {
+            var successMessageDiv = document.getElementById('successMessage');
+            successMessageDiv.innerHTML = message;
+            successMessageDiv.style.display = 'block';
+
+            setTimeout(function () {
+                successMessageDiv.style.display = 'none';
+            }, 3000); // Display for 3 seconds, adjust as needed
+        }
+
+        function showErrorMessage(message) {
+            alert(message); // You can customize this to handle errors differently
+        }
+    </script>
 </body>
 
 </html>
