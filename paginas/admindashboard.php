@@ -69,6 +69,8 @@ if (!$allItemsResult) {
     die("Error fetching items: " . $conn->error);
 }
 
+
+
 ?>
 
 <!DOCTYPE html>
