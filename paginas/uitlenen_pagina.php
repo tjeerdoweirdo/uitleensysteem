@@ -96,50 +96,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['changeStatus'])) {
 </head>
 
 <body>
-    <div class="section">
-        <h2>Status en Datum Beheer</h2>
-
-        <!-- Table 1: Overdue Items -->
-        <div class="section">
-            <h2>Te laat ingeleverde items</h2>
-            <table border="1">
-                <tr>
-                    <th>Item Naam</th>
-                    <th>Item Nummer</th>
-                    <th>Datum van Inleveren</th>
-                    <th>Datum van Terugbrengen</th>
-                    <th>Item Omschrijving</th>
-                    <th>Item Status</th>
-                    <th>Actie</th>
-                </tr>
-                <?php
-                $overdueItemsQuery = "SELECT * FROM items WHERE itemState = 'Teruggebracht' AND itemDout < '$currentDate'";
-                $overdueItemsResult = $conn->query($overdueItemsQuery);
-
-                if ($overdueItemsResult->num_rows > 0) {
-                    while ($row = $overdueItemsResult->fetch_assoc()) {
-                        echo "<tr>
-                            <td>{$row['itemName']}</td>
-                            <td>{$row['itemNumber']}</td>
-                            <td>{$row['itemDin']}</td>
-                            <td>{$row['itemDout']}</td>
-                            <td>{$row['itemDescription']}</td>
-                            <td>{$row['itemState']}</td>
-                            <td>
-                                <form method='post' action='{$_SERVER["PHP_SELF"]}'>
-                                    <input type='hidden' name='itemId' value='{$row['itemId']}'>
-                                    <input type='hidden' name='newStatus' value='Ingeleverd'>
-                                    <button type='submit' name='changeStatus'>Inleveren</button>
-                                </form>
-                            </td>
-                        </tr>";
-                    }
-                } else {
-                    echo "<tr><td colspan='8'>Geen te laat ingeleverde items gevonden</td></tr>";
-                }
-                ?>
-            </table>
-        </div>
 
         <!-- Table 2: Borrowed Items -->
         <div class="section">
