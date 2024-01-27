@@ -158,9 +158,10 @@ $conn->close();
                 echo "<a href='productslogin.php?catId={$categoryId}'>";
                 echo "<span>{$categoryName}</span>";
                 echo "<img src='{$imagePath}' alt='Category Image' style='max-width: 75px; max-height: 75px;'>";
-                echo "<button type='button' onclick='removeCategory({$categoryId})'>Remove</button>";
+                echo "<button type='button' onclick='removeCategory($categoryId, event); event.preventDefault();'>Remove</button>";
                 echo "</a>";
                 echo "</li>";
+                
                 
             }
         }
@@ -179,6 +180,23 @@ $conn->close();
     });
 
     function removeCategory(categoryId) {
+        $.ajax({
+            type: "GET",
+            url: "<?php echo $_SERVER['PHP_SELF']; ?>",
+            data: { action: "remove", id: categoryId },
+            success: function(response) {
+                $("#" + "category_" + categoryId).remove();
+                console.log(response);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error removing category:", error);
+            }
+        });
+    }
+
+    function removeCategory(categoryId, event) {
+        event.stopPropagation(); 
+        
         $.ajax({
             type: "GET",
             url: "<?php echo $_SERVER['PHP_SELF']; ?>",

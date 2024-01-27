@@ -217,8 +217,8 @@ if (!$allItemsResult) {
             Item Naam: <input type='text' id='editItemName' name='editItemName' value=''><br>
             Item Nummer: <input type='text' id='editItemNumber' name='editItemNumber' value=''><br>
             Item Omschrijving: <textarea id='editItemDescription' name='editItemDescription'></textarea><br>
-            Datum van Inleveren: <input type='date' id='editItemDin' name='editItemDin' value=''><br>
-            Datum van Terugbrengen: <input type='date' id='editItemDout' name='editItemDout' value=''><br>
+            Datum uitlenen: <input type='date' id='editItemDin' name='editItemDin' value=''><br>
+            Datum Terugbrengen: <input type='date' id='editItemDout' name='editItemDout' value=''><br>
             <input type='submit' name='updateItem' value='Bijwerken'>
         </form>
     </div>
