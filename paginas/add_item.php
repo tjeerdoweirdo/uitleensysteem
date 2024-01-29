@@ -77,8 +77,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Update SQL query to include item status
-    $insertQuery = "INSERT INTO items (itemName, itemNumber, itemDescription, itemPicture, catId, itemStatus) 
-                    VALUES ('$voorwerp_naam', '$item_number', '$item_description', '$targetFile', '$item_category', '$item_status')";
+    $insertQuery = "INSERT INTO items (itemName, itemNumber, itemDescription, itemPicture, catId, itemState) 
+                    VALUES ('$voorwerp_naam', '$item_number', '$item_description', '$targetFile', '$item_category', '$item_state')";
 
     if ($conn->query($insertQuery) === TRUE) {
         $successMessage = "Item successfully added!";
