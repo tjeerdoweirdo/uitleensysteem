@@ -31,10 +31,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $item_description = $_POST["itemDescription"];
     $item_category = $_POST["itemCategory"];
 
+    // Item status
+    $item_status = 'teruggebracht';
+
     $targetDirectory = "uploads/";
     $targetFile = $targetDirectory . basename($_FILES["itemPicture"]["name"]);
     $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
 
+    // File upload validation
     if (isset($_POST["submit"])) {
         $check = getimagesize($_FILES["itemPicture"]["tmp_name"]);
         if ($check !== false) {
@@ -72,8 +76,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    $insertQuery = "INSERT INTO items (itemName, itemNumber, itemDescription, itemPicture, catId) 
-                    VALUES ('$voorwerp_naam', '$item_number', '$item_description', '$targetFile', '$item_category')";
+    // Update SQL query to include item status
+    $insertQuery = "INSERT INTO items (itemName, itemNumber, itemDescription, itemPicture, catId, itemStatus) 
+                    VALUES ('$voorwerp_naam', '$item_number', '$item_description', '$targetFile', '$item_category', '$item_status')";
 
     if ($conn->query($insertQuery) === TRUE) {
         $successMessage = "Item successfully added!";
@@ -158,6 +163,13 @@ include '../includes/header.php';
                     <label class="custom-file-label" id="itemPictureLabel" for="itemPicture">Choose file</label>
                 </div>
             </div>
+            
+            <!-- Display item status -->
+            <div class="form-group">
+                <label for="itemStatus">Item Status:</label>
+                <input type="text" class="form-control" name="itemStatus" value="teruggebracht" disabled>
+            </div>
+
             <button type="submit" class="btn btn-primary">Voeg Item Toe</button>
         </form>
     </div>
