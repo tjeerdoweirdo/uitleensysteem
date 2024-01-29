@@ -31,8 +31,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $item_description = $_POST["itemDescription"];
     $item_category = $_POST["itemCategory"];
 
-    // Item status
-    $item_status = 'teruggebracht';
+    // Item state
+    $item_state = 'teruggebracht';
 
     $targetDirectory = "uploads/";
     $targetFile = $targetDirectory . basename($_FILES["itemPicture"]["name"]);
@@ -76,7 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // Update SQL query to include item status
+    // Update SQL query to include item state
     $insertQuery = "INSERT INTO items (itemName, itemNumber, itemDescription, itemPicture, catId, itemState) 
                     VALUES ('$voorwerp_naam', '$item_number', '$item_description', '$targetFile', '$item_category', '$item_state')";
 
@@ -164,10 +164,10 @@ include '../includes/header.php';
                 </div>
             </div>
             
-            <!-- Display item status -->
+            <!-- Display item state -->
             <div class="form-group">
-                <label for="itemStatus">Item Status:</label>
-                <input type="text" class="form-control" name="itemStatus" value="teruggebracht" disabled>
+                <label for="itemState">Item State:</label>
+                <input type="text" class="form-control" name="itemState" value="teruggebracht" disabled>
             </div>
 
             <button type="submit" class="btn btn-primary">Voeg Item Toe</button>
