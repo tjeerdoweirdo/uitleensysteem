@@ -137,7 +137,7 @@ $result = $conn->query($sql);
 
 $conn->close();
 ?>
-<h2>Category Manager</h2>
+<h2>Categorie manager</h2>
 <form method="post" action="" enctype="multipart/form-data">
     <input type="text" name="category" placeholder="Enter a new category" required>
     <input type="file" name="catPicture" accept="image/*">
